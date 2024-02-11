@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>MediaPipe Pose</title>
+</head>
+
+<body>
+  <data id="startTask" data-starttask="false"></data>
+</body>
+<script src="node_modules/obs-websocket-js/dist/obs-ws.js"></script>
+<script src="obsConnect.js"></script>
+
+<script>
+  console.log("Document Loaded")
+  var setupDetails, sourceWidth, sourceHeight, eltWidth, eltHeight;
+  window.addEventListener('DOMContentLoaded', async () => {
+    console.log(document.getElementById('startTask'))
+    //add video element
+    var domElement = document.createElement('video');
+    domElement.setAttribute('playsinline', '');
+    domElement.setAttribute('id', 'projector');
+    document.body.appendChild(domElement);
+
+    //get obs ws socket details
+    setupDetails = await window.electronAPI.handleGetOBSWSdetails();
+    console.log(setupDetails.websocketIP, setupDetails.websocketPort, setupDetails.websocketPassword)
+    await connectOBS(setupDetails.websocketIP, setupDetails.websocketPort, setupDetails.websocketPassword);
+
+    //get source width and Height
+    console.log("get ")
+    sourceInput = await obs.call("GetInputSettings", {
+      inputName: setupDetails.sourceName,
+    });
+    sourceWidth = JSON.parse(sourceInput.inputSettings.resolution).width;
+    sourceHeight = JSON.parse(sourceInput.inputSettings.resolution).height;
+    console.log(sourceInput, sourceHeight, sourceWidth)
+
+    //start desktopcapture stream
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: 'desktop',
+          chromeMediaSourceId: setupDetails.windowID,
+          maxFrameRate: 10
+        }
+      }
+    })
+    console.log(stream)
+    stream.getTracks().forEach(function (track) {
+      console.log(track.getSettings());
+    })
+    handleStream(stream);
+  })
+
+  function handleStream(stream) {
+    const video = document.querySelector('video')
+    video.srcObject = stream;
+    video.play();
+    console.log(video.srcObject)
+    //const video = document.querySelector('video')
+    var v = document.getElementById("projector");
+
+    v.addEventListener("loadedmetadata", function (e) {
+      eltWidth = this.videoWidth,
+        eltHeight = this.videoHeight;
+      console.log(`width: ${eltWidth}`)
+      console.log(`height: ${eltHeight}`)
+      //ExportToOBS();
+      //createPoseLandmarker();
+      console.log(`final step`)
+      document.getElementById('startTask').dataset.starttask = "trueBoom";
+      console.log(document.getElementById('startTask'))
+    }, false);
+
+  }
+  //#region create data stream to OBS
+  async function ExportToOBS() {
+
+    //create text source to store nedia pipe data
+
+    //sourceratio
+    var sourceRatio = sourceWidth / sourceHeight;
+    console.log(sourceRatio)
+
+    //adjust video element size
+    console.log(eltWidth, sourceRatio)
+    eltHeightCorrection = eltHeight - (eltWidth * sourceRatio)
+    console.log(eltHeightCorrection)
+
+    //projector scale
+    //xFactor = ((X/eltWidth)*sourceWidth).toFixed(0);
+    //Yfactor = ((Y/(eltHeight-eltHeightCorrection))*sourceHeight).toFixed(0);
+
+    //media pipe
+
+    //adjust Mediapipe results to scale
+    //json parse reviver
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+
+
+    //use OBS websockets to send position to a Scene Move Transition filter
+
+    await obs.call("SetInputSettings", {
+      inputName: "KeyPointValues",
+      inputSettings: {
+        text: JSON.stringify(flatPoses)
+      }
+    });
+
+  }
+
+  //#endregion
+</script>
+
+<script type="module">
+  import { PoseLandmarker, FilesetResolver, DrawingUtils } from "./node_modules/@mediapipe/tasks-vision/vision_bundle.js";
+  console.log("Module started")
+  setTimeout(startTask, 2000);
+  let poseLandmarker = undefined;
+
+  const createPoseLandmarker = async () => {
+    const vision = await FilesetResolver.forVisionTasks("./node_modules/@mediapipe/tasks-vision/wasm");
+    poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: `./mediapipe_models/pose_landmarker_full.task`,
+        delegate: "GPU"
+      },
+      runningMode: "VIDEO",
+      numPoses: 1,
+      outputSegmentationMasks: 0
+    });
+  };
+  createPoseLandmarker();
+
+  function startTask() {
+    console.log("called on settime")
+
+    var lastVideoTime = -1;
+
+    const video = document.getElementById("projector");
+
+    renderLoop();
+    function renderLoop() {
+      let startTimeMs = performance.now();
+      if (video.currentTime != lastVideoTime) {
+        const poseLandmarkerResult = poseLandmarker.detectForVideo(video, startTimeMs);
+        processResults(poseLandmarkerResult.landmarks[0]);
+        //console.log(poseLandmarkerResult)
+        lastVideoTime = video.currentTime;
+      }
+
+      requestAnimationFrame(() => {
+        renderLoop();
+      });
+    }
+  }
+
+  async function processResults(objJSON) {
+    let key;
+    //https://www.tutorialspoint.com/flattening-a-json-object-in-javascript
+    const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
+      for (key in obj) {
+        if (typeof obj[key] !== 'object') {
+          res[extraKey + key] = obj[key];
+        } else {
+          flattenJSON(obj[key], res, `${extraKey}${key}.`);
+        }
+      }
+      return res;
+    };
+  
+    //Scale the X and Y to match the source size
+    objJSON = parseResults(objJSON);
+    
+    //Flatten the JSON results for Advanced Scene Switcher
+    objJSON = flattenJSON(objJSON);
+
+    await obs.call("SetInputSettings", {
+      inputName: "KeyPointValues",
+      inputSettings: {
+        text: JSON.stringify(objJSON)
+        //text: JSON.stringify(obj)
+      }
+    });
+  }
+
+  function parseResults(obj) {
+    var jsonString = JSON.stringify(obj);
+    const parsedJson = JSON.parse(jsonString, function (key, value) {
+      if (key === "x")
+        return (value * sourceWidth).toFixed(0);
+
+      if (key === "y")
+        return (value * sourceHeight).toFixed(0);
+
+      return value;
+    });
+    return parsedJson;
+  }
+</script>
+
+</html>

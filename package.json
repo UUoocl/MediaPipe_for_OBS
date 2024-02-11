@@ -1,0 +1,17 @@
+{
+  "name": "mediapipe-for-obs",
+  "version": "0.0.1",
+  "description": "An app to send MediaPipe ML  data to OBS. ",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "uuoocl",
+  "license": "MIT",
+  "devDependencies": {
+    "@mediapipe/tasks-vision": "0.10.0",
+    "electron": "^28.2.2",
+    "obs-websocket-js": "^5.0.4"
+  }
+}

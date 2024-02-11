@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">  -->
+  <title>MediaPipe for OBS</title>
+</head>
+
+<body>
+  <h4>Connect to OBS WebSocket Server:</h4>
+  <label for="IP">Enter IP address or "localhost":</label>
+  <input type="text" id="IP" name="IP" value="localhost" /><br>
+  <label for="Port">Enter Port Number:</label>
+  <input type="text" id="Port" name="Port" value="4455" /><br>
+  <label for="PW">Enter Password:</label>
+  <input type="text" id="PW" name="PW" value="rOiOxwYP5OCtmTeD" /><br>
+  <input type="button" id="WSconnectButton" value="Connect to OBS" />
+  <br><br>
+  <label for="openProjectors">Choose a desktop source projector to capture:</label>
+  <select name="projectors" id="projectors">
+    <option value="">--Please choose a source--</option>
+  </select>
+  <br><br>
+  <h4><input type="checkbox" id="poseWindow" name="poseWindow" checked value=>
+    <label for="poseWindow">Pose Detection</label>
+  </h4>
+
+  <h4><input type="checkbox" id="faceWindow" name="faceWindow" checked disabled value=1>
+    <label for="faceWindow">Face Tracking</label>
+  </h4>
+
+  <h4><input type="checkbox" id="segmentationWindow" name="segmentationWindow" disabled value=>
+    <label for="segmentationWindow">Segmentation</label>
+  </h4>
+
+  <input type="button" id="SubmitButton" value="Start MediaPipe" />
+  <p id="info"></p>
+</body>
+
+<script src="node_modules/obs-websocket-js/dist/obs-ws.js"></script>
+<script src="obsConnect.js"></script>
+<script src="renderer.js"></script>
+
+
+</html>
