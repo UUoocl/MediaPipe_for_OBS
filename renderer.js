@@ -16,6 +16,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 wsButton.addEventListener("click", ipcGetSources);
 
 async function ipcGetSources() {
+  document.getElementById("projectors").innerHTML = null; 
   desktopSources = await window.electronAPI.handleGetSources();
   console.log("Test returned:", desktopSources)
   loadOptions();
