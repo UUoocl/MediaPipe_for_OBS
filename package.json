@@ -18,11 +18,12 @@
     "@electron-forge/maker-squirrel": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
-    "@mediapipe/tasks-vision": "0.10.0",
+    
     "electron": "^28.2.2",
     "obs-websocket-js": "^5.0.4"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "0.10.0",
     "electron-squirrel-startup": "^1.0.0"
   }
 }

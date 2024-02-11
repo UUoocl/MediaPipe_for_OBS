@@ -39,7 +39,7 @@ async function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 }
 //#endregion
 
@@ -74,7 +74,7 @@ ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) =>
     y: 100,
     frame: true,
     resizable: true,
-    roundedCorners: false,
+    //roundedCorners: false,
     movable: true,
     titleBarOverlay: false,
     transparent: false,
