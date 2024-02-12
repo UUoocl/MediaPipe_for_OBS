@@ -68,8 +68,8 @@ ipcMain.handle('get-sources', async () => {
 ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) => {
   console.log("main received IPC")
   poseWindow = new BrowserWindow({
-    width: 300,
-    height: 300,
+    width: 500,
+    height: 800,
     x: 100,
     y: 100,
     frame: true,

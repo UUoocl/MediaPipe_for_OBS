@@ -2,18 +2,18 @@
 var desktopSources = [];
 
 const button = document.getElementById('SubmitButton');
-const wsButton = document.getElementById('WSconnectButton');
+const refreshButton = document.getElementById('refreshButton');
 
 let moveOffScreenButton, movePrimaryScreenButton;
 
 window.addEventListener('DOMContentLoaded', async () => {
-  startWSconnection();
+  //startWSconnection();
   desktopSources = await window.electronAPI.handleGetSources();
   loadOptions();
 })
 
 //Connect to OBS Web Socket Server
-wsButton.addEventListener("click", ipcGetSources);
+refreshButton.addEventListener("click", ipcGetSources);
 
 async function ipcGetSources() {
   document.getElementById("projectors").innerHTML = null; 
@@ -22,13 +22,13 @@ async function ipcGetSources() {
   loadOptions();
 }
 
-async function startWSconnection() {
-  const IP = document.getElementById('IP').value;
-  const Port = document.getElementById('Port').value;
-  const PW = document.getElementById('PW').value;
-  console.log("obsConnect js called")
-  connectOBS(IP, Port, PW);
-}
+// async function startWSconnection() {
+//   const IP = document.getElementById('IP').value;
+//   const Port = document.getElementById('Port').value;
+//   const PW = document.getElementById('PW').value;
+//   console.log("obsConnect js called")
+//   connectOBS(IP, Port, PW);
+// }
 
 //Add Projector windows to the drop down list. 
 function loadOptions() {
