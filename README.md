@@ -39,6 +39,11 @@ To work the MediaPipe for OBS app needs
 
 ### Create a Text Source
 Name the the Text Source **KeyPointValues**
+The landmarks will be stored in this Text Source in JSON format.  
+![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/c163f4b1-0455-41b0-9709-605d32f31a69)
+
+Each Landmark has an X, Y and Z coordinate.  
+
 
 ## Using MediaPipe for OBS
 Download the latest [release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
