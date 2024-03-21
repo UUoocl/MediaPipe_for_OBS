@@ -73,3 +73,45 @@ npx electron-forge import
 ```
 npm run make
 ```
+
+
+# OBS Connections
+
+```mermaid
+
+flowchart LR
+
+O4O["OSC for OBS"]
+ZOSC[ZoomOSC]
+XL[Excel]
+
+ss-->TD
+MP["MediaPipe Pose"] -->ss
+MP["MediaPipe Pose"] -->obs-b
+ss-->OBSBOT_Center
+TOSC<--"ocs1"-->OBSBOT_Center["OBSBOT Center"]
+TOSC --"ocs2 out"--> ZOSC
+TOSC <--"ocs3"--> O4O
+ZOSC-->O4O
+ss-->TOSC
+GC[🎮] -->TOSC
+Midi[Midi] --> TOSC
+obs-b<-->GAS["Google Apps Scripts"]
+GAS<-->GS["Google Sheets🗃️"]
+O4O<-->OBS
+subgraph OBS
+    direction TB
+    ss-->lua
+    camera["USB PTZ Camera"]<-->util
+    util["uvc util"]<-->lua["lua Script"]
+    obs-b[browser]
+    ss["Scene Switcher"]
+end
+XL <--> OBS
+Midi-->ss
+TD[TouchDesigner]<-->TOSC[TouchOSC]
+GC-->obs-b
+
+linkStyle default stroke-width:4px,fill:none,stroke:red;
+linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 stroke-width:4px,fill:none,stroke:green;
+```
