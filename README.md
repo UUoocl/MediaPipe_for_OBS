@@ -4,20 +4,23 @@ The Text Source can be read by the Advanced Scene Switcher or a Browser Source.
 ```mermaid
 graph TD;
 subgraph OBS
-A(Sources)-->B(Video Projector Window);
-A<-->D[Advanced Scene Switcher];
+A(Video Source)-->B(Video Projector Window);
+D[Advanced Scene Switcher];
+E[Browser]
 end
 
 B(Projector Window)--> C(MediaPipe for OBS);
 
-C <---> |WebSocket|A;
+C ---> |WebSocket|E;
+C ---> |WebSocket|D;
+
 ```
 
 ## OBS Setup
-To work the MediaPipe for OBS app needs 
-1. the OBS Web Socket Server and
-2. 2 OBS sources, and
-3. a Projector window   
+MediaPipe for OBS app needs 
+1. the OBS Web Socket Server,
+2. an OBS Video source with a projector window
+3. A Browser of Advanced Scene Switcher to receive the landmark data
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/a6927c6b-2894-44f5-bdb5-6c33a798555b)
 
 
@@ -37,13 +40,14 @@ To work the MediaPipe for OBS app needs
  ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/dc80a9f6-c6a9-454c-af02-fcfe1d437be4)
 
 
-### Create a Text Source
-Name the the Text Source **KeyPointValues**
-The landmarks will be stored in this Text Source in JSON format.  
+### Create a Browser Source
+Load a local html file with an event listener. 
+The landmarks will be sent as an evnt named "pose-landmarks".  
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/c163f4b1-0455-41b0-9709-605d32f31a69)
 
-Each Landmark has an X, Y and Z coordinate.  
+Each Landmark has an X, Y, Z and Visability value.  
 
+Messages are also sent the Advanced Scene Switcher Plugin with the values as the message
 
 ## Using MediaPipe for OBS
 Download the latest [release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
