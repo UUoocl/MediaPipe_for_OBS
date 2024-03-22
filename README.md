@@ -43,7 +43,8 @@ MediaPipe for OBS app needs
 ### Create a Browser Source
 Load a local html file with an event listener. 
 The landmarks will be sent as an evnt named "pose-landmarks".  
-![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/c163f4b1-0455-41b0-9709-605d32f31a69)
+![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/6d158908-8a9d-41de-b0e1-e775edab998c)
+
 
 Each Landmark has an X, Y, Z and Visability value.  
 
