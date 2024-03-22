@@ -19,6 +19,7 @@
 
   <script>
     console.log("Document Loaded");
+    __electronLog.info('Log from the renderer');
     var setupDetails,
       sourceWidth,
       sourceHeight,
@@ -223,15 +224,17 @@
           });
 
           //send results to Advanced Scene Switcher
+          const AdvancedSceneSwitcherMessage = JSON.stringify(poseLandmarkerResult)
           obs.call("CallVendorRequest", {
             vendorName: "AdvancedSceneSwitcher",
             requestType: "AdvancedSceneSwitcherMessage",
             requestData: {
-              message: {poseLandmarkerResult},
+              message: {value:AdvancedSceneSwitcherMessage},
             },
           });
 
           console.log(poseLandmarkerResult);
+          __electronLog.info(JSON.stringify(poseLandmarkerResult));
         }
         canvasCtx.restore();
         window.requestAnimationFrame(renderLoop);

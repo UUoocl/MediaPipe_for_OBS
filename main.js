@@ -1,5 +1,12 @@
 const { app, BrowserWindow, desktopCapturer, ipcMain } = require('electron/main')
 const path = require('path')
+const log = require('electron-log');
+
+// Optional, initialize the logger for any renderer process
+console.log = log.log;
+log.initialize();
+
+log.info('Log from the main process');
 
 let mainWindow, poseWindow, segmentationWindow;
 
@@ -39,7 +46,7 @@ async function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 //#endregion
 
@@ -78,7 +85,7 @@ ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) =>
     movable: true,
     titleBarOverlay: false,
     transparent: false,
-    titleBarStyle: 'customButtonsOnHover',
+    titleBarStyle: 'default',
     webPreferences: {
       backgroundThrottling: false,
       preload: path.join(__dirname, 'pose-preload.js')
