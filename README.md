@@ -84,7 +84,6 @@ npm run make
 # OBS Connections
 
 ```mermaid
-
 flowchart LR
 
 O4O["OSC for OBS"]
@@ -106,14 +105,12 @@ ZOSC-->O4O
 TOSC<--"ocs1"-->OBSBOT_Center
 TOSC --"ocs2 out"--> ZOSC
 TOSC <--"ocs3"--> O4O
-obs-b<-->GAS
-GAS<-->GS
 XL <--> OBS
 O4O<-->OBS
 Midi <--> TOSC
 Midi<-->ss
 ss--"ocs"-->TD
-ss--"ocs"-->TOSC
+ss--"ocs2 in"-->TOSC
 ss--"ocs"-->ZOSC
 ss--"ocs"-->OBSBOT_Center
 
@@ -125,16 +122,19 @@ end
 
 subgraph OBS[OBS Web Socket Server]
     direction TB
-    ss-->lua
-    camera["USB \n PTZ \n Camera"]<-->util
-    util["uvc \n util"]<-->lua["lua \n Script"]
+    lua["lua \n Script"]
     obs-b[browser]
     ss["Scene \n Switcher"]
+    ss-->lua
+    lua<-->util["uvc \n util"]
+    util<-->camera["USB \n PTZ \n Camera"]
 end
 
+obs-b<-->GAS
+GAS<-->GS
 TD<--"ocs4"-->TOSC
 MnStg<--"ocs5"-->TOSC
 
 linkStyle default stroke-width:4px,fill:none,stroke:red;
-linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 stroke-width:4px,fill:none,stroke:green;
+linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 stroke-width:4px,fill:none,stroke:green;
 ```
