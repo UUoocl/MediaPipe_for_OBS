@@ -2,11 +2,12 @@
 An Electron App to send MediaPipe data to OBS. Landmark positions from the MediaPipe pose model are sent to an OBS Text Soure.   
 The Text Source can be read by the Advanced Scene Switcher or a Browser Source.  
 ```mermaid
-graph TD;
+graph LR;
 subgraph OBS
-A(Video Source)-->B(Video Projector Window);
-D[Advanced Scene Switcher];
-E[Browser]
+  direction LR
+  A(Video Source)-->B(Video Projector Window);
+  D[Advanced Scene Switcher];
+  E[Browser]
 end
 
 B(Projector Window)--> C(MediaPipe for OBS);
@@ -87,35 +88,52 @@ npm run make
 flowchart LR
 
 O4O["OSC for OBS"]
-ZOSC[ZoomOSC]
 XL[Excel]
+GC[Game 🎮\n Controller]
+MnStg[MainStage]
+TOSC[TouchOSC]
+TD[TouchDesigner]
+MP["MediaPipe \n Pose"]
+OBSBOT_Center["OBSBOT Center"]
+GAS["Google \n Apps \n Scripts"]
+GS["Google \n Sheets🗃️"]
+Midi["Midi 🎹 \n Device"]
 
-ss-->TD
-MP["MediaPipe Pose"] -->ss
-MP["MediaPipe Pose"] -->obs-b
-ss-->OBSBOT_Center
-TOSC<--"ocs1"-->OBSBOT_Center["OBSBOT Center"]
+GC-->TOSC
+MP -->ss
+MP -->obs-b
+ZOSC-->O4O
+TOSC<--"ocs1"-->OBSBOT_Center
 TOSC --"ocs2 out"--> ZOSC
 TOSC <--"ocs3"--> O4O
-ZOSC-->O4O
-ss-->TOSC
-GC[🎮] -->TOSC
-Midi[Midi] --> TOSC
-obs-b<-->GAS["Google Apps Scripts"]
-GAS<-->GS["Google Sheets🗃️"]
+obs-b<-->GAS
+GAS<-->GS
+XL <--> OBS
 O4O<-->OBS
-subgraph OBS
+Midi <--> TOSC
+Midi<-->ss
+ss--"ocs"-->TD
+ss--"ocs"-->TOSC
+ss--"ocs"-->ZOSC
+ss--"ocs"-->OBSBOT_Center
+
+subgraph Zoom Clients
+    Zoom
+    ZoomShortcuts
+    ZOSC[ZoomOSC]
+end
+
+subgraph OBS[OBS Web Socket Server]
     direction TB
     ss-->lua
-    camera["USB PTZ Camera"]<-->util
-    util["uvc util"]<-->lua["lua Script"]
+    camera["USB \n PTZ \n Camera"]<-->util
+    util["uvc \n util"]<-->lua["lua \n Script"]
     obs-b[browser]
-    ss["Scene Switcher"]
+    ss["Scene \n Switcher"]
 end
-XL <--> OBS
-Midi-->ss
-TD[TouchDesigner]<-->TOSC[TouchOSC]
-GC-->obs-b
+
+TD<--"ocs4"-->TOSC
+MnStg<--"ocs5"-->TOSC
 
 linkStyle default stroke-width:4px,fill:none,stroke:red;
 linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 stroke-width:4px,fill:none,stroke:green;
