@@ -125,9 +125,10 @@ subgraph OBS[OBS Web Socket Server]
     lua["lua \n Script"]
     obs-b[browser]
     ss["Scene \n Switcher"]
-    ss-->lua
+    ss--hotkey-->lua
     lua<-->util["uvc \n util"]
     util<-->camera["USB \n PTZ \n Camera"]
+    
 end
 
 obs-b<-->GAS
@@ -136,5 +137,5 @@ TD<--"ocs4"-->TOSC
 MnStg<--"ocs5"-->TOSC
 
 linkStyle default stroke-width:4px,fill:none,stroke:red;
-linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 stroke-width:4px,fill:none,stroke:green;
+linkStyle 0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,19 stroke-width:4px,fill:none,stroke:green;
 ```
