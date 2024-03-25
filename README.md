@@ -88,54 +88,72 @@ flowchart LR
 
 O4O["OSC for OBS"]
 XL[Excel]
-GC[Game 🎮\n Controller]
+GC[Game 🎮\n Controllers]
 MnStg[MainStage]
 TOSC[TouchOSC]
 TD[TouchDesigner]
 MP["MediaPipe \n Pose"]
-OBSBOT_Center["OBSBOT Center"]
 GAS["Google \n Apps \n Scripts"]
 GS["Google \n Sheets🗃️"]
-Midi["Midi 🎹 \n Device"]
+Midi["Midi 🎹 \n Devices"]
+AS["Apple\nScript"]
+%%OBSBOT_Center["OBSBOT Center"]
+ZOSC[ZoomOSC]
+Shortcuts[MacOS\nShortcuts]
 
+
+%%MP --websocket-->ss
+%%MP -->obs-b
 GC-->TOSC
-MP -->ss
-MP -->obs-b
-ZOSC-->O4O
-TOSC<--"ocs1"-->OBSBOT_Center
-TOSC --"ocs2 out"--> ZOSC
-TOSC <--"ocs3"--> O4O
-XL <--> OBS
-O4O<-->OBS
-Midi <--> TOSC
-Midi<-->ss
+ZOSC--"osc"-->O4O
+TOSC--midi-->ss
 ss--"ocs"-->TD
-ss--"ocs2 in"-->TOSC
 ss--"ocs"-->ZOSC
-ss--"ocs"-->OBSBOT_Center
+%%ss--"ocs"-->OBSBOT_Center
+O4O--"ws"-->wss
+MP --"ws"-->wss
+TD --"osc"--> O4O
+Midi<---->|midi|ss
+%%ss<--midi-->Midi
+%%ss<--midi-->MnStg
+%%TOSC --"ocs2 out"--> ZOSC
+%%TOSC <--"ocs3"--> O4O
+XL <--"ws"--> wss
+%%Midi <--> TOSC
+%%TOSC<--"ocs1"-->OBSBOT_Center
+%%TD---ss
+%%ss--"ocs2 in"-->TOSC
+MnStg<--"midi"-->ss
+GAS<--gs-->GS
+obs-b<--"js"-->GAS
+lua-->AS
+lua-->Shortcuts
+subgraph OBS[OBS]
+    direction LR
 
-subgraph Zoom Clients
-    Zoom
-    ZoomShortcuts
-    ZOSC[ZoomOSC]
-end
-
-subgraph OBS[OBS Web Socket Server]
-    direction TB
     lua["lua \n Script"]
-    obs-b[browser]
     ss["Scene \n Switcher"]
-    ss--hotkey-->lua
-    lua<-->util["uvc \n util"]
-    util<-->camera["USB \n PTZ \n Camera"]
+    obs-b[browser]
+    wss["WebSocket \nServer"]
     
+    ss--hotkey-->lua
+    %%wss<-->obs-b
+    %%util<-->camera["USB \n PTZ \n Camera"] 
+    ss<--"ws"-->wss
+    obs-b<--"ws"-->wss
+    %%wss<-->ss
+    lua<-->obs-b
+    lua<-->util["uvc \n util"]
 end
 
-obs-b<-->GAS
-GAS<-->GS
-TD<--"ocs4"-->TOSC
-MnStg<--"ocs5"-->TOSC
+%%subgraph Zoom Clients
+    %%ZOSC[ZoomOSC]
+    %%Zoom
+    %%ZoomShortcuts
+%%end
 
-linkStyle default stroke-width:4px,fill:none,stroke:red;
-linkStyle 0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,19 stroke-width:4px,fill:none,stroke:green;
+
+
+linkStyle default stroke-width:4px,fill:none,stroke:green;
+linkStyle 0,1,3,2,4,5,6,7,13,14,15 stroke-width:4px,fill:none,stroke:blue;
 ```
