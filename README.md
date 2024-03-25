@@ -96,10 +96,10 @@ MP["MediaPipe \n Pose"]
 GAS["Google \n Apps \n Scripts"]
 GS["Google \n Sheets🗃️"]
 Midi["Midi 🎹 \n Devices"]
-AS["Apple\nScript"]
+AS["Command\nline"]
 %%OBSBOT_Center["OBSBOT Center"]
 ZOSC[ZoomOSC]
-Shortcuts[MacOS\nShortcuts]
+%%Shortcuts[MacOS\nShortcuts]
 
 
 %%MP --websocket-->ss
@@ -127,7 +127,7 @@ MnStg<--"midi"-->ss
 GAS<--gs-->GS
 obs-b<--"js"-->GAS
 lua-->AS
-lua-->Shortcuts
+%%lua-->Shortcuts
 subgraph OBS[OBS]
     direction LR
 
