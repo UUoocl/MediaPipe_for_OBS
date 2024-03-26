@@ -222,14 +222,14 @@
               event_data: { poseLandmarkerResult},
             },
           });
-
+          
           //send results to Advanced Scene Switcher
           const AdvancedSceneSwitcherMessage = JSON.stringify(poseLandmarkerResult)
           obs.call("CallVendorRequest", {
             vendorName: "AdvancedSceneSwitcher",
             requestType: "AdvancedSceneSwitcherMessage",
             requestData: {
-              message: {value:AdvancedSceneSwitcherMessage},
+              "message": AdvancedSceneSwitcherMessage,
             },
           });
 

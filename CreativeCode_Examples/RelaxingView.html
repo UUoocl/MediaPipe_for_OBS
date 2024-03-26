@@ -1,0 +1,675 @@
+<!-- Example of pose reactive background
+https://codepen.io/atzedent/pen/KKYabdm -->
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MediaPipe Pose</title>
+  </head>
+
+  <body>
+    </body> 
+    <script>
+
+const choose = a => a[Math.floor(Math.random() * a.length)]
+const speeds = [.125,.25,.5]
+const resont = [.6,.8]
+const volmns = [.5]
+const options = {
+  volume: choose(volmns),
+  resonance: choose(resont),
+  speed: choose(speeds)
+}
+
+const Composer = () => {
+
+  /** @type {AudioContext} */
+  let context,
+  main, verb, bus, compressor
+
+  const trigger = Object.freeze({
+    trig: function () {
+      let prev = 0
+      let t = false
+      return function (val) {
+        t = prev < 0 && val >= 0
+        prev = val
+        return t
+      }
+    },
+    change: function () {
+      let prev = 0
+      let t = false
+      return function (val) {
+        t = prev != val
+        prev = val
+        return t
+      }
+    },
+    pulse: function (threshold) {
+      let prev = 0
+      let t = false
+      return function (b) {
+        if (b) prev++
+        if (prev == threshold) {
+          t = true
+          prev = 0
+        } else { t = false }
+        return t
+      }
+    },
+    every: function(n) {
+      let i = 0
+      return () => i++%n === 0
+    }
+  })
+
+  const lowTrig = trigger.trig()
+  const highTrig = trigger.trig()
+  const bassTrig = trigger.trig()
+  const lowChanged = trigger.change()
+  const bassChanged = trigger.change()
+  const highChanged = trigger.change()
+  const pulseTrig = trigger.trig()
+  const every4th = trigger.every()
+  const pulsed = trigger.pulse(10)
+  const roots = [21, 23, 24, 26, 28, 30]
+
+  let b = Float32Array.from({ length: 3 }, () => Math.random() * 2 - 1)
+  let m = [0, 4, 0, 9, 0, 4, 9]
+  let root = pickItem(b[1], 0, 20, roots)
+
+  options.rand = lerp(b[2], -1, 1, 0.05, 1)
+
+  function loop() {
+    main.gain.value = dbamp(lerp(options.volume, 0, 1, -60, 3))
+    compose()
+    setTimeout(() => loop(), expInterp(options.speed, 0, 1, 800, 80))
+  }
+
+  function compose() {
+    b = Float32Array.from({ length: 24 }, () => Math.random() < .25 ? Math.random() * 2 - 1 : 0)
+    //b = brownNoise(24,.25,1).map(p => Math.random() < .25 ? lerp(p,0,1,-1,1) : p)
+    if (pulsed(pulseTrig(b[0]))) {
+      root = pickItem(b[1], 0, 20, [21, 25, 28, 33])
+      options.speed = choose(speeds)
+      console.table(options)
+    }
+
+    if (lowTrig(b[21])) {
+      const note = pickNote(b[21], 15, 35)
+      if (lowChanged(note)) {
+        sine(
+          midicps(note),
+          pickVolume(b[22], -24, -9),
+          b[23]
+        )
+      }
+    }
+
+    {
+      const note = pickNote(b[11], 20, 32)
+      if (highChanged(note)) {
+        sine(
+          midicps(note),
+          pickVolume(b[12], -24, -9),
+          b[13]
+        )
+      }
+      if (every4th()) {
+        sine(
+          midicps(pickNote(b[11], 5, 15)),
+          pickVolume(b[12], -30, -25),
+          b[13]
+        )
+      }
+    }
+    if (bassTrig(b[11])) {
+      const note = pickNote(b[11], 5, 15)
+      if (bassChanged(note)) {
+        sine(
+          midicps(note),
+          pickVolume(b[12], -30, -25),
+          b[13]
+        )
+      }
+    }    
+    
+  }
+
+  function pickItem(v, a, b, array) {
+    return array[round(lerp(v, -1, 1, a, b)) % (array.length - 1)]
+  }
+
+  function pickNote(v, a, b) {
+    return deg2key(lerp(v, -1, 1, a, b), m) + root
+  }
+
+  function pickVolume(v, a, b) {
+    return dbamp(lerp(v, -1, 1, a, b))
+  }
+
+  function mod(n, m) { return ((n % m) + m) % m }
+
+  function div(a, b) { return a / b >> 0 }
+
+  function deg2key(degree, mode) {
+    const size = mode.length
+    const deg = round(degree)
+    return (12 * div(deg, size)) + mode[mod(deg, size)]
+  }
+
+  function fractInterp(a, b, fraction) {
+    return a + fraction * (b - a)
+  }
+
+  function expInterp(x, a, b, c, d) {
+    if (x <= a) {
+      return c
+    }
+    if (x >= b) {
+      return d
+    }
+    return Math.pow(d / c, (x - a) / (b - a)) * c
+  }
+
+  function lerp(x, a, b, c, d) {
+    if (x <= a) {
+      return c
+    }
+    if (x >= b) {
+      return d
+    }
+    return (x - a) * (d - c) / (b - a) + c
+  }
+
+  function round(a) { return (a + (a > 0 ? 0.5 : -0.5)) << 0 }
+
+  function midicps(a) { return 440. * Math.pow(2.0, (a - 69.0) * 0.083333333333) }
+
+  function dbamp(a) { return Math.pow(10, a * 0.05) }
+
+  function createReverb(context) {
+    const length = 6 * context.sampleRate
+    const decay = .8
+    const buffer = context.createBuffer(2, length, context.sampleRate)
+    const noiseData = [buffer.getChannelData(0), buffer.getChannelData(1)]
+
+    const noise = Float32Array.from({ length }, () => Math.random() * 2 - 1)
+
+    for (let i = 0; i < length; i++) {
+      const k = noise[i]
+      noiseData[0][i] = k * Math.pow(1 - i / length, decay)
+      noiseData[1][i] = k * Math.pow(1 - i / length, decay)
+    }
+
+    const convolver = context.createConvolver()
+    convolver.buffer = buffer
+
+    return convolver
+  }
+
+  function init() {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext
+    context = new AudioContext({ latencyHint: 'balanced' })
+
+    verb = createReverb(context)
+    compressor = context.createDynamicsCompressor()
+    main = context.createGain()
+    bus = context.createGain()
+    bus.connect(verb)
+    verb.connect(main)
+    main.connect(compressor)
+    compressor.ratio.value = 12
+    compressor.release.value = .5
+    compressor.threshold.value = -26
+    compressor.connect(context.destination)
+    
+    console.table(options)
+
+    requestAnimationFrame(loop)
+  }
+  function instrument(freq, amp, pan, type, att, rel, detune) {
+    const HALF_PI = Math.PI * 0.5
+    const vco = context.createOscillator()
+    const vca = context.createGain()
+    const out = context.createGain()
+    const panner = context.createStereoPanner()
+    //const wave = context.createPeriodicWave([.8, .75, .125, .0, .03, .25, .3, .1],[0, 0, 0, 0, 0, 0, 0, 0]);
+    panner.pan.value = pan
+    vco.detune.value = detune
+    //vco.setPeriodicWave(wave) // if type is 'custom'
+    vco.type = type //triangle, sine, square, sawtooth, custom
+    vco.frequency.value = freq
+
+
+    const filter = context.createBiquadFilter()
+    filter.type = "allpass";
+    filter.frequency.value = 392;
+    filter.Q.value = 2;
+    filter.gain.value = 8;
+
+    // lfo
+    const lfo = context.createOscillator()
+    const lfoAmp = context.createGain()
+    lfo.type = type
+    lfo.frequency.value = 6
+    lfoAmp.gain.value = 12
+    
+    lfo.connect(lfoAmp)
+    lfoAmp.connect(filter.frequency)
+    
+    // xfade resonance
+    out.gain.value = Math.cos(options.resonance * HALF_PI)
+    bus.gain.value = Math.cos((1.0 - options.resonance) * HALF_PI)
+    vco.connect(filter)
+    filter.connect(vca)
+    vca.connect(panner)
+    panner.connect(out)
+    out.connect(main)
+    panner.connect(bus)
+    // env
+    const now = context.currentTime
+    const attack = now + att
+    const release = attack + rel
+    vca.gain.value = .05
+    vca.gain.setValueAtTime(vca.gain.value, now)
+    vca.gain.linearRampToValueAtTime(amp, attack)
+    vca.gain.exponentialRampToValueAtTime(0.001, release)
+
+    lfo.start(now)
+    vco.start(now)
+   
+    // gc
+    lfo.stop(release + .1)
+    vco.stop(release + 0.1)
+    setTimeout(() => { lfo.disconnect(); vco.disconnect(); }, 1000 * (release + 0.2))
+  }
+
+  function sine(freq, amp, pan) {
+    instrument(freq, amp, pan, 'sine', .1+lerp(b[2],-1,1,0,.2), .125+lerp(b[3],-1,1,0,.1), 5)
+  }
+
+  function tri(freq, amp, pan) {
+    instrument(freq, amp, pan, 'triangle', .01, .125, 5)
+  }
+  
+  function sqr(freq, amp, pan) {
+    instrument(freq, amp, pan, 'square', .01, .5, 5)
+  }
+
+  function saw(freq, amp, pan) {
+    instrument(freq, amp, pan, 'sawtooth', .025, .85, Math.sqrt(freq))
+  }
+
+  function brownNoise(n, h, scale) {
+    let result = []
+    let delta = 1 / n
+    let hurst = Math.pow(2, 2 * h - 2)
+
+    let b = [Math.random() * scale]
+
+    for (let i = 1; i < n; i++) {
+        let rnd = Math.sqrt(delta) * (Math.random() - 0.5) * scale
+        b[i] = b[i - 1] + rnd
+    }
+
+    for (let i = 0; i < n; i++) {
+        let idx = Math.floor(i * hurst) % n
+        result.push((b[idx] % scale + scale) % scale)
+    }
+
+    return result
+}
+
+  let bkpVol = options.volume
+  function toggle() {
+    if (options.volume > 0) {
+      bkpVol = options.volume
+      options.volume = 0
+    } else {
+      options.volume = bkpVol
+    }
+  }
+
+  play.addEventListener("click", () => {
+    if (!context) init()
+    else toggle()
+  })
+}
+
+const canvas = document.createElement("canvas")
+const gl = canvas.getContext("webgl2")
+
+document.title = "🤖"
+document.body.innerHTML = ""
+document.body.appendChild(canvas)
+document.body.style = "margin:0;touch-action:none;overflow:hidden"
+canvas.style.width = "100%"
+canvas.style.height = "auto"
+canvas.style.userSelect = "none"
+
+const style = document.createElement("style")
+style.innerHTML = `
+input {
+  all: unset;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 3rem;
+  height: 2rem;
+  opacity: .2;
+  filter: saturate(0) invert(1);
+  cursor: pointer;
+  transition: opacity 500ms ease-in-out;
+}
+
+input:hover {
+  opacity: 1;
+}
+
+input::after {
+  content: '${"\\1f508"}';
+}
+
+input:checked::after {
+  content: '${"\\1f50a"}';
+}
+`
+document.body.appendChild(style)
+
+const playCtrl = document.createElement("input")
+playCtrl.setAttribute("type", "checkbox")
+playCtrl.setAttribute("id", "play")
+playCtrl.style = "position:fixed;top:1rem;right:1rem;"
+document.body.appendChild(playCtrl)
+
+Composer()
+
+const dpr = Math.max(1,.5*window.devicePixelRatio)
+
+// Create framebuffer
+const backbuffer = createFramebuffer()
+
+// Create a texture for the framebuffers
+const buffers = [createTexture(), createTexture()]
+
+let textureIndex = 0
+
+gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  
+function resize() {
+  const {
+    innerWidth: width,
+    innerHeight: height
+  } = window
+
+  canvas.width = width * dpr
+  canvas.height = height * dpr
+
+  gl.viewport(0, 0, width * dpr, height * dpr)
+  
+  // Resize the textures
+  gl.bindFramebuffer(gl.FRAMEBUFFER, backbuffer)
+  
+  for (let i = 0; i < buffers.length; i++) {
+    const b = buffers[i]
+    gl.bindTexture(gl.TEXTURE_2D, b);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  }
+  
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+window.onresize = resize
+
+const vertexSource = `#version 300 es
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
+  precision mediump float;
+  #endif
+  
+  in vec4 position;
+  
+  void main(void) {
+      gl_Position = position;
+  }
+  `
+
+const fragmentSource = `#version 300 es
+  /*********
+   * made by Matthias Hurrle (@atzedent)
+   */
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
+  precision mediump float;
+  #endif
+  out vec4 O;
+  uniform float time;
+  uniform vec2 resolution;
+  uniform sampler2D backbuffer;
+  uniform vec2 touch;
+  #define mouse (touch/R)
+  #define FC gl_FragCoord.xy
+  #define R resolution
+  #define T (50.+.5*time)
+  #define S smoothstep
+  #define N normalize
+  #define rot(a) mat2(cos(a-vec4(0,11,33,0)))
+  const vec4 lumcoeff = vec4(.2125,.7154,.0721,0);
+  vec3 palette(float t) { vec3 a=vec3(.15),b=vec3(.35),c=vec3(.3),d=vec3(.1,.2,.3); return a+b*cos(6.3*(c*t+d)); }
+  float rnd(vec2 p) { return fract(sin(dot(p,vec2(12.9898,78.233)))*345678.); }
+  float noise(vec2 p) { vec2 i=floor(p),f=fract(p),u=S(.0,1.,f); float a=rnd(i),b=rnd(i+vec2(1,0)),c=rnd(i+vec2(0,1)),d=rnd(i+1.); return mix(mix(a,b,u.x),mix(c,d,u.x),u.y); }
+  float fbm(vec2 p) { float t=.0,a=1.,h=.0;vec2 s=vec2(100);mat2 m=mat2(0,-1,1,0); for (int i=0;i<5;i++) { t+=a*noise(p+T*.05);p=2.*p*m+s;a*=.5;h+=a; } return t/h; }
+  vec3 pattern(vec2 uv) {
+    vec3 col=vec3(0);
+    vec2 p=uv;
+    float d=1.;
+    for (float i=.0;i<3.;i++) {
+      p=vec2(cos(uv.x),sin(uv.y))*i;
+      uv*=2.;
+      float
+      a=fbm(uv*d),
+      b=noise(22.*(uv+p)*d);
+      d=mix(a,b,.1);
+      col+=palette(d*length(p)+T*.2);
+    }
+    return col;
+  }
+  vec3 bloom() {
+    vec4 sum=vec4(0);
+    const float n=4.;
+    for (float i=-n;i<=n;i++) {
+      for (float j=-n;j<=n;j++) {
+        vec2 off=vec2(i,j);
+        vec2 uv=FC/R;
+        vec4 tx=texture(backbuffer,FC/R);
+        float d=dot(tx,lumcoeff);
+        sum+=tx*d/(n*n);
+      }
+    }
+    return sum.rgb;
+  }
+  float mapto(float x,float a,float b,float c,float d) { return (x-a)/(b-a)*(d-c)+c; }
+  void cam(inout vec2 uv) {
+    if (abs(mapto(mouse.y,.0,1.,-.5,.5))<.4) {
+      uv*=rot(3.15+mouse.x*6.3);
+    } else {
+      uv*=rot(sin(T*.2)*.2);
+    }
+  }
+  void main(void) {
+    float scale=1./R.y;
+    vec2 uv=(FC-.5*R)/min(R.x,R.y),p=FC/R,
+    dir=N(vec2(-.25,1));
+    vec3 col=vec3(0);
+    col+=pattern(uv);
+    col=tanh(col*col*col*col);
+    cam(dir);
+    const float steps=50.;
+    for (float i=.0;i<steps;i++) {
+      p+=dir*scale;
+      col=mix(col,max(col,texture(backbuffer, p).rgb),1.5/steps);
+    }
+    col = mix(col,bloom()*.25,.125);
+    O = vec4(col,1);
+  }
+`
+
+function createFramebuffer() {
+  const framebuffer = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  return framebuffer;
+}
+
+function createTexture() {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return texture;
+}
+  
+function compile(shader, source) {
+  gl.shaderSource(shader, source)
+  gl.compileShader(shader)
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(shader))
+  }
+}
+  
+let program
+
+function setup() {
+  const vs = gl.createShader(gl.VERTEX_SHADER)
+  const fs = gl.createShader(gl.FRAGMENT_SHADER)
+
+  compile(vs, vertexSource)
+  compile(fs, fragmentSource)
+
+  program = gl.createProgram()
+
+  gl.attachShader(program, vs)
+  gl.attachShader(program, fs)
+  gl.linkProgram(program)
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(program))
+  }
+}
+
+let vertices, buffer
+
+function init() {
+  vertices = [
+      -1., 1.,
+      -1.,-1.,
+       1., 1.,
+       1.,-1.,
+      ]
+
+  buffer = gl.createBuffer()
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
+
+  const position = gl.getAttribLocation(program, "position")
+
+  gl.enableVertexAttribArray(position)
+  gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
+
+  program.resolution = gl.getUniformLocation(program, "resolution")
+  program.time = gl.getUniformLocation(program, "time")
+  program.touch = gl.getUniformLocation(program, "touch")
+  program.pointerCount = gl.getUniformLocation(program, "pointerCount")
+  program.backbuffer = gl.getUniformLocation(program, "backbuffer")
+}
+
+const mouse = {
+  x: 0,
+  y: 0,
+  touches: new Set(),
+  update: function(x, y, pointerId) {
+    this.x = x * dpr;
+    this.y = (innerHeight - y) * dpr;
+    this.touches.add(pointerId)
+  },
+  remove: function(pointerId) { this.touches.delete(pointerId) }
+}
+
+function render(now) {
+  gl.clearColor(0, 0, 0, 1)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  gl.useProgram(program)
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.uniform2f(program.resolution, canvas.width, canvas.height)
+  gl.uniform1f(program.time, now * 1e-3)
+  gl.uniform2f(program.touch, mouse.x, mouse.y)
+  gl.uniform1i(program.pointerCount, mouse.touches.size)
+  gl.uniform1i(program.backbuffer, 0); // Assuming texture unit 0
+  
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+}
+
+function renderBackbuffer(now) {
+  // Bind the current framebuffer
+  gl.bindFramebuffer(gl.FRAMEBUFFER, backbuffer)
+  // Set the texture of the current framebuffer as the render target
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, buffers[textureIndex], 0);
+
+  textureIndex = ++textureIndex%buffers.length
+  
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, buffers[textureIndex]);
+  
+  render(now)
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  
+  // Unbind the framebuffer
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+
+function renderToScreen(now) {    
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, buffers[textureIndex]);
+  
+  render(now)
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+function loop(now) {  
+  renderBackbuffer(now)
+  renderToScreen(now) 
+  requestAnimationFrame(loop)
+}
+
+setup()
+init()
+resize()
+loop(0)
+
+window.addEventListener("pointerdown", e => mouse.update(e.clientX, e.clientY, e.pointerId))
+window.addEventListener("pointerup", e => mouse.remove(e.pointerId))
+window.addEventListener("pose-landmarks", e => {
+    mouse.update(e.detail.poseLandmarkerResult[0].x * 800, e.detail.poseLandmarkerResult[0].y * 800, 0)
+})
+
+canvas.addEventListener('webglcontextlost', function(event) {
+  console.log('WebGL context lost', event);
+})
+
+canvas.addEventListener('webglcontextrestored', function(event) {
+  console.log('WebGL context restored', event);
+})
+    </script>

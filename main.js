@@ -1,12 +1,36 @@
 const { app, BrowserWindow, desktopCapturer, ipcMain } = require('electron/main')
 const path = require('path')
 const log = require('electron-log');
+const fs = require('fs'); 
 
 // Optional, initialize the logger for any renderer process
 console.log = log.log;
+
+log.transports.console.format = '[{h}:{i}:{s}.{ms}] {text}';
+log.transports.console.level = 'error';
+
+log.transports.file.format = '[{h}:{i}:{s}.{ms}] {text}';
+log.transports.file.maxSize = 5242880;
+
+
+
+log.transports.file.archiveLog = (file) => {
+  file = file.toString();
+  const info = path.parse(file);
+  let currentDate = new Date().toJSON().slice(0, 19).replaceAll(":","_")
+  try {
+    fs.renameSync(file, path.join(info.dir, info.name + currentDate + info.ext));
+  } catch (e) {
+    console.warn('Could not rotate log', e);
+  }
+};
+
+
 log.initialize();
 
+
 log.info('Log from the main process');
+
 
 let mainWindow, poseWindow, segmentationWindow;
 
