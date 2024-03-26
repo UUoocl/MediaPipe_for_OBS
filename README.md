@@ -21,7 +21,7 @@ C ---> |WebSocket|D;
 MediaPipe for OBS app needs 
 1. the OBS Web Socket Server,
 2. an OBS Video source with a projector window
-3. A Browser of Advanced Scene Switcher to receive the landmark data
+3. A Browser or Advanced Scene Switcher to receive the landmark data
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/a6927c6b-2894-44f5-bdb5-6c33a798555b)
 
 
@@ -55,6 +55,8 @@ Messages are also sent the Advanced Scene Switcher Plugin with the values as the
 Download the latest [release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/093f216d-4c09-4cec-8c47-b659178a49d9)
 
+**MacOS note: Before using the MediaPipe for OBS, Add permissions in Settings-->Privacy & Security-->Screen Recording & System Audio. 
+
 - ### Enter the OBS WebSocket details 
 
 - ### Choose a projector window
@@ -63,8 +65,11 @@ Download the latest [release](https://github.com/UUoocl/MediaPipe_for_OBS/releas
 
 
 ## Dev install
+Steps to setup a developement environment. 
 ```
 npm install electron --save-dev
+npm install --save-dev @electron-forge/cli
+npm install --save-dev @electron-forge/plugin-fuses
 ```
 ```
 npm run start
@@ -72,7 +77,6 @@ npm run start
 
 
 ```
-npm install --save-dev @electron-forge/cli
 npx electron-forge import
 ```
 
@@ -155,5 +159,5 @@ end
 
 
 linkStyle default stroke-width:4px,fill:none,stroke:green;
-linkStyle 0,1,3,2,4,5,6,7,13,14,15 stroke-width:4px,fill:none,stroke:blue;
+linkStyle 0,1,3,2,4,5,6,7,13,14 stroke-width:4px,fill:none,stroke:blue;
 ```
