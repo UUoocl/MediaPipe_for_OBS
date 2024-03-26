@@ -27,7 +27,7 @@ MediaPipe for OBS app needs
 1. the OBS Web Socket Server,
 2. an OBS Video source with a projector window
 3. A Browser or Advanced Scene Switcher to receive the landmark data
-![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/a6927c6b-2894-44f5-bdb5-6c33a798555b)
+
 
 
 ### Turn on OBS WebSocket Server
