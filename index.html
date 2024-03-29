@@ -10,44 +10,42 @@
 <body>
   <h4>Connect to OBS WebSocket Server:</h4>
   <label for="IP">Enter IP address or "localhost":</label>
-  <input type="text" id="IP" name="IP" value="localhost" /><br>
+  <input type="text" id="IP" name="IP" value="ip" /><br>
   <label for="Port">Enter Port Number:</label>
-  <input type="text" id="Port" name="Port" value="4455" /><br>
+  <input type="text" id="Port" name="Port" value="port" /><br>
   <label for="PW">Enter Password:</label>
-  <input type="text" id="PW" name="PW" value="your-password" /><br>
+  <input type="text" id="PW" name="PW" value="password" /><br>
+  <input type="button" id="WSconnectButton" value="Connect to OBS" />
   <br><br>
   <label for="openProjectors">Choose a desktop source projector to capture:</label>
   <select name="projectors" id="projectors">
     <option value="">--Please choose a source--</option>
   </select>
   <br>`
-  <input type="button" id="WSconnectButton" value="Refresh list of Projector Windows" />
+  <input type="button" id="refreshProjector" value="Refresh list of Projector Windows" />
   <br><br>
   <h4><input type="checkbox" id="poseWindow" name="poseWindow" checked value=>
     <label for="poseWindow">Pose Detection</label>
   </h4>
-
-  <h4><input type="checkbox" id="faceWindow" name="faceWindow" checked disabled value=1>
+  
+  <input type="button" id="PoseButton" value="Start MediaPipe" />
+  <h4 style="visibility:hidden"><input type="checkbox" id="faceWindow" name="faceWindow" checked disabled value=1>
     <label for="faceWindow">Face Tracking</label>
   </h4>
 
-  <h4><input type="checkbox" id="segmentationWindow" name="segmentationWindow" disabled value=>
+  <h4 style="visibility:hidden"><input type="checkbox" id="segmentationWindow" name="segmentationWindow" disabled value=>
     <label for="segmentationWindow">Segmentation</label>
   </h4>
-
-  <input type="button" id="SubmitButton" value="Start MediaPipe" />
   <p>
     By default, it writes logs to the following locations:<br>
 
     on macOS: ~/Library/Logs/{app name}/main.log<br>
     on Windows: %USERPROFILE%\AppData\Roaming\{app name}\logs\main.log
   </p>
+  <h4>Transparent Google Slides Player</h4>
+    <h3><label for="Link">Enter a Published Google Slide Link:</label></h3>
+    <input type="text" id="Link" name="Link" size=150 value="https://docs.google.com/presentation/d/e/2PACX-1vRVpsaZJbgTiremeDpWaIW3M2gt0rmSj4bf_ymuH5panELG2cZcL1dwwaKhA6jNjIMozaUBBx1sZ5gQ/pub?start=false&loop=false&delayms=3000"/><br><br>
+    <input type="button" id="SlidesButton" value="Start Google Slides"/>
   <p id="info"></p>
 </body>
-
-<script src="./obs-ws.js"></script>
-<script src="./obsConnect.js"></script>
-<script src="./renderer.js"></script>
-
-
 </html>
