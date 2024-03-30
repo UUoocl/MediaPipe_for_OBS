@@ -32,7 +32,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   ///moveWindowsToPrimaryScreen: () => ipcRenderer.send('move-windows-to-primary-screen'),
   //getSources: () => getSource(),
   handleGetDesktopSources: () => ipcRenderer.invoke('get-desktop-sources'),
-  OBSconnection: (IP, Port, PW) => ipcRenderer.send('set-obs-connection', IP, Port, PW)
+  setOBSconnection: (IP, Port, PW) => ipcRenderer.send('set-obs-connection', IP, Port, PW),
+  getOBSconnection: () => ipcRenderer.invoke('get-obs-connection')
   //obsConnect: () => obsConnect(), 
   //invokeGetSources: () => ipcRenderer.invoke('handleGetSources'),
   //myInvokableIpc: () => ipcRenderer.invoke('handleInvoke')

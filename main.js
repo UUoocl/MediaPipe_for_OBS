@@ -3,6 +3,11 @@ const path = require('path')
 const log = require('electron-log');
 const fs = require('fs'); 
 
+//macOS microphone permission
+const { systemPreferences } = require('electron')
+const microphone = systemPreferences.askForMediaAccess('microphone');
+
+
 //#region log file
 //Create log file of Pose landmarks
 console.log = log.log;
@@ -41,7 +46,6 @@ var webSocketDetails = {
 //#region When app starts Create main window
 app.whenReady().then(() => {
   createWindow()
-
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -74,7 +78,7 @@ async function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 //#endregion
 
@@ -225,7 +229,6 @@ ipcMain.handle('get-desktop-sources', async () => {
 })
 //#endregion
 //#region IPC set OBS connection
-
 ipcMain.on('set-obs-connection', async (event, IP, Port, PW ) => {
   console.log('setting OBS Connection')
   
@@ -234,11 +237,26 @@ ipcMain.on('set-obs-connection', async (event, IP, Port, PW ) => {
     websocketPort: Port,
     websocketPassword: PW
   };
-  console.log(webSocketDetails.websocketIP)
+  console.log(webSocketDetails.websocketIP,webSocketDetails.websocketPort,webSocketDetails.websocketPassword)
   //write to file
-  let sData = `var wss = {"ip":"${IP}","port":"${Port}","pw":"${PW}"}`
-  fs.writeFileSync("webSocket_server_setting.js",sData)
+  let sData = JSON.stringify(webSocketDetails)
+  const userpath = app.getPath('userData')
+  fs.writeFileSync(`${userpath}/webSocket_server_setting.txt`,sData)
 
+})
+
+ipcMain.handle('get-obs-connection', async (event) => {
+  console.log("set OBS connection defaults")
+  const userpath = app.getPath('userData')
+  console.log(userpath)
+  //console.log(fs.exists(`${userpath}/webSocket_server_setting.txy`))
+  if(fs.existsSync(`${userpath}/webSocket_server_setting.txt`)){
+    let dt = fs.readFileSync(`${userpath}/webSocket_server_setting.txt`)
+    let data = JSON.parse(dt)
+    console.log(dt)
+    console.log(data)
+    return data
+  }
 })
 
 ipcMain.on('wsConnect', (event) => {

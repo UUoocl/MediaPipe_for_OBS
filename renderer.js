@@ -12,17 +12,21 @@ let moveOffScreenButton, movePrimaryScreenButton;
 loadScript();
 async function loadScript(){
   setWSdefaults();
-  startWSconnection();
+  //startWSconnection();
   desktopSources = await window.electronAPI.handleGetDesktopSources();
   loadProjectorOptions();
   getInputSources();
 }
 
-function setWSdefaults(){
-  if(wss.pw){  
-    document.getElementById("IP").value = wss.ip;
-    document.getElementById("Port").value = wss.port;
-    document.getElementById("PW").value = wss.pw;
+async function setWSdefaults(){
+  console.log("set OBS connection defaults")
+  savedConnection = await window.electronAPI.getOBSconnection();
+  console.log(savedConnection)
+  console.log(typeof savedConnection)
+  if(savedConnection){  
+    document.getElementById("IP").value = savedConnection.websocketIP;
+    document.getElementById("Port").value = savedConnection.websocketPort;
+    document.getElementById("PW").value = savedConnection.websocketPassword;
   }
 }
 
@@ -68,7 +72,7 @@ async function startWSconnection() {
   connectOBS(IP, Port, PW);
   //Save IP, Port,PW to file
   console.log("calling ipc contextBridge.")
-  window.electronAPI.OBSconnection(IP, Port, PW);
+  window.electronAPI.setOBSconnection(IP, Port, PW);
 }
 
 //Add Projector windows to the drop down list. 

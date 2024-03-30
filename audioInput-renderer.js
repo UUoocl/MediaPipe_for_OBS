@@ -13,6 +13,7 @@ var then = Date.now();
 var interval;
 var delta;
 
+
 function updateFPS() {
   console.log("FPS changed");
   frameRate = document.getElementById("FPS").value;
@@ -76,14 +77,21 @@ async function loadRenderer() {
     video: false,
   });
   console.log(stream);
-//   stream.getTracks().forEach(function (track) {
-//     console.log(track.getSettings());
-//   });
+  stream.getTracks().forEach(function (track) {
+    console.log(track.getSettings());
+  });
   //handleStream(stream);
   Analyze(stream);
 }
 
 function Analyze(stream) {
+  const audio = document.querySelector("audio");
+  audio.srcObject = stream;
+  //audio.play();
+  audio.muted = false;
+  
+  console.log(audio.srcObject);
+
   console.log("Analyse called");
   const canvas = document.getElementById("output_canvas");
   const canvasCtx = canvas.getContext("2d");
@@ -153,14 +161,14 @@ function Analyze(stream) {
   draw();
 }
 
-function handleStream(stream) {
-  const audio = document.querySelector("audio");
-  audio.srcObject = stream;
-  audio.onloadedmetadata = function (e) {
-    audio.play();
-    audio.muted = false;
-  };
-  console.log(audio.srcObject);
-}
+// function handleStream(stream) {
+//   const audio = document.querySelector("audio");
+//   audio.srcObject = stream;
+//   audio.onloadedmetadata = function (e) {
+//     audio.play();
+//     audio.muted = false;
+//   };
+//   console.log(audio.srcObject);
+// }
 
-async function ExportToOBS() {}
+// async function ExportToOBS() {}
