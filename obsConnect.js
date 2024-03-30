@@ -15,7 +15,7 @@ async function connectOBS(websocketIP, websocketPort, websocketPassword) {
       rpcVersion: 1
     });
     console.log(`Connected to server ${obsWebSocketVersion} (using RPC ${negotiatedRpcVersion})`)
-    document.title = "connection set";
+    //document.title = "connection set";
   } catch (error) {
     console.error('Failed to connect', error.code, error.message);
   }

@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   slideWindow: (IP, Port, PW, Link) => ipcRenderer.send('open-slide-window', IP, Port, PW, Link),
   //cameraWindow: (CameraID) => ipcRenderer.send('open-camera-window', CameraID),
   poseWindow: (IP, Port, PW, projectorID, sourceName) => ipcRenderer.send('open-pose-window',IP, Port, PW, projectorID, sourceName),
+  AudioInputWindow: (IP, Port, PW, InputID,sourceName) => ipcRenderer.send('open-audioinput-window',IP, Port, PW, InputID,sourceName),
   //segmentationWindow: () => ipcRenderer.send('open-segmentation-window'),
   //getCameraId: () => ipcRenderer.send('get-cameras'),
   //moveWindowsOffScreen: () => ipcRenderer.send('move-windows-off-screen'),

@@ -74,10 +74,9 @@ async function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 }
 //#endregion
-
 
 //#region Open-Pose-windows
 ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) => {
@@ -111,6 +110,41 @@ ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) =>
   poseWindow.loadFile('pose.html');
 })
 //#endregion
+
+//#region Open-audioinput-windows
+ipcMain.on('open-audioinput-window', (event, IP, Port, PW, inputID,sourceName) => {
+  console.log("main received IPC")
+  poseWindow = new BrowserWindow({
+    width: 400,
+    height: 400,
+    x: 200,
+    y: 100,
+    title: sourceName,
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'audioInput-preload.js')
+    }
+  })
+
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW,
+    inputID: inputID
+  };
+  //console.log(windowSetup)
+  poseWindow.loadFile('audioInput.html');
+  //poseWindow.webContents.openDevTools()
+})
+//#endregion
+
 
 //#region Open-Slide-windows
 ipcMain.on('open-slide-window', (event, IP, Port, PW, Link) => {
@@ -185,14 +219,12 @@ ipcMain.handle('get-desktop-sources', async () => {
     });
   });
   //console.log(results)
-  return results;
+ return results;
   //map example
   //console.log(results.map((result) => [result.name, result.id]));
 })
 //#endregion
-
 //#region IPC set OBS connection
-
 
 ipcMain.on('set-obs-connection', async (event, IP, Port, PW ) => {
   console.log('setting OBS Connection')
@@ -204,6 +236,9 @@ ipcMain.on('set-obs-connection', async (event, IP, Port, PW ) => {
   };
   console.log(webSocketDetails.websocketIP)
   //write to file
+  let sData = `var wss = {"ip":"${IP}","port":"${Port}","pw":"${PW}"}`
+  fs.writeFileSync("webSocket_server_setting.js",sData)
+
 })
 
 ipcMain.on('wsConnect', (event) => {
@@ -211,17 +246,6 @@ ipcMain.on('wsConnect', (event) => {
   console.log(webSocketDetails )
   event.returnValue = webSocketDetails
 })
-
-// ipcMain.on('wsConnect-Port', (event) => {
-//   console.log("sending websocket details to new window") 
-//   event.returnValue = webSocketDetails.websocketPort
-// })
-
-// ipcMain.on('wsConnect-PW', (event) => {
-//   console.log("sending websocket details to new window") 
-//   speakerViewWindow = event.sender;
-//   event.returnValue = webSocketDetails.websocketPassword
-// })
 //#endregion
 
 //#region IPC Slides APIs
@@ -248,7 +272,4 @@ ipcMain.on('move-windows-to-primary-screen', (event) => {
   mainWindow.focus();
 })
 //#endregion
-
-
-
 //#endregion

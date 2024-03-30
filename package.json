@@ -12,18 +12,18 @@
   "author": "uuoocl",
   "license": "MIT",
   "devDependencies": {
-    "@electron-forge/cli": "^7.3.0",
-    "@electron-forge/maker-deb": "^7.3.0",
-    "@electron-forge/maker-rpm": "^7.3.0",
-    "@electron-forge/maker-squirrel": "^7.3.0",
-    "@electron-forge/maker-zip": "^7.3.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
+    "@electron-forge/cli": "^7.3.1",
+    "@electron-forge/maker-deb": "^7.3.1",
+    "@electron-forge/maker-rpm": "^7.3.1",
+    "@electron-forge/maker-squirrel": "^7.3.1",
+    "@electron-forge/maker-zip": "^7.3.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
+    "@electron-forge/plugin-fuses": "^7.3.1",
     "@mediapipe/tasks-vision": "0.10.12",
     "electron": "^28.2.8",
     "obs-websocket-js": "^5.0.4"
   },
   "dependencies": {
-    "@electron-forge/plugin-fuses": "^7.3.0",
     "@mediapipe/tasks-vision": "0.10.12",
     "electron-log": "^5.1.2",
     "electron-squirrel-startup": "^1.0.0"

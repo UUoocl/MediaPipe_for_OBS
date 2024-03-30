@@ -8,7 +8,7 @@ var setupDetails,
   windowID,
   sourceName,
   MPvalues;
-var frameRate, FPSElement, canvasElement;
+var frameRate, FPSElement, canvasElement, IP, PORT, PW;
 
 async function updateFPS() {
   console.log("FPS changed");
@@ -52,21 +52,16 @@ document.getElementById("FPS").addEventListener("change", updateFPS);
   //get obs ws socket details
   setupDetails = await window.electronAPI.handleGetOBSWSdetails();
   console.log("IPC connect details")
-  console.log(
-    setupDetails.websocketIP,
-    setupDetails.websocketPort,
-    setupDetails.websocketPassword,
-    setupDetails.sourceName)
+  IP = setupDetails.websocketIP
+  PORT = setupDetails.websocketPort
+  PW =  setupDetails.websocketPassword
   
-  await connectOBS(wss.ip,
-    wss.port,
-    wss.pw,
-    )
-  
-  // await connectOBS(setupDetails.websocketIP,
-  //   setupDetails.websocketPort,
-  //   setupDetails.websocketPassword,
+  // await connectOBS(wss.ip,
+  //   wss.port,
+  //   wss.pw,
   //   )
+  
+  await connectOBS(IP,PORT,PW)
 
   //get source width and Height
   console.log("get ");
@@ -92,7 +87,7 @@ document.getElementById("FPS").addEventListener("change", updateFPS);
   windowID = setupDetails.windowID;
 
   //check if text source exists to store MediaPipe values
-  sourceName = setupDetails.sourceName;
+  //sourceName = setupDetails.sourceName;
 
   //
   const sourceList = await obs.call("GetInputList", {

@@ -3,8 +3,8 @@ var desktopSources = [];
 
 const poseButton = document.getElementById('PoseButton');
 const wsConnectButton = document.getElementById('WSconnectButton');
-const refreshButton = document.getElementById('refreshProjector');
-
+const refreshPrjButton = document.getElementById('refreshProjector');
+const refreshInputButton = document.getElementById('refreshInputs');
 
 let moveOffScreenButton, movePrimaryScreenButton;
 
@@ -15,6 +15,7 @@ async function loadScript(){
   startWSconnection();
   desktopSources = await window.electronAPI.handleGetDesktopSources();
   loadProjectorOptions();
+  getInputSources();
 }
 
 function setWSdefaults(){
@@ -27,12 +28,34 @@ function setWSdefaults(){
 
 //Connect to OBS Web Socket Server
 wsConnectButton.addEventListener("click", startWSconnection);
-refreshButton.addEventListener("click", ipcGetDesktopSources);
+refreshPrjButton.addEventListener("click", ipcGetDesktopSources);
+refreshInputButton.addEventListener("click", getInputSources);
+
+function getInputSources(){ 
+  document.getElementById("audioIn").innerHTML = null
+  //console.log("list of Audio Input Sources")
+  navigator.mediaDevices
+    .enumerateDevices()
+    .then((devices) => {
+      devices.forEach((device) => {
+          if(device.kind == "audioinput"){    
+    //        console.log(device)
+      //      console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
+            var x = document.getElementById("audioIn");
+            var option = document.createElement("option");
+            option.text = device.label;
+            option.id = device.deviceId;
+            x.add(option);    
+          }
+      });
+    })
+}
+
 
 async function ipcGetDesktopSources() {
   document.getElementById("projectors").innerHTML = null; 
   desktopSources = await window.electronAPI.handleGetDesktopSources();
-  console.log("Test returned:", desktopSources)
+  //console.log("Test returned:", desktopSources)
   loadProjectorOptions();
 }
 
@@ -62,32 +85,59 @@ function loadProjectorOptions() {
   }
 }
 
+
 //#region Create new MediaPipe windows
 var sourceInput, sourceWidth, sourceHeight;
 poseButton.addEventListener("click", newPoseWindow);
 
 async function newPoseWindow() {
   //get server details
-  const IP = wss.ip  //document.getElementById('IP').value;
-  const Port = wss.port //document.getElementById('Port').value;
-  const PW = wss.pw //document.getElementById('PW').value;
+  const IP = document.getElementById('IP').value;
+  const Port = document.getElementById('Port').value;
+  const PW = document.getElementById('PW').value;
 
   //get source name
   const OpenProjector = document.getElementById('projectors').value;
   console.log("Open Window", OpenProjector)
   
   //IPC message to open windows to start Media pipe
-  const OpenPose = document.getElementById('poseWindow');
+  //const OpenPose = document.getElementById('poseWindow');
   
-  var e = document.getElementById("projectors");
+  const e = document.getElementById("projectors");
   console.log(e.value)
   console.log(e.options[e.selectedIndex].text)
-  var sourceName = e.value;
-  var projectorID = e.options[e.selectedIndex].id;
+  const sourceName = e.value;
+  const projectorID = e.options[e.selectedIndex].id;
   console.log(`${IP}, ${Port}, ${PW}, ${projectorID},${sourceName}`);
   
   console.log("call main")
   window.electronAPI.poseWindow(IP, Port, PW, projectorID, sourceName);
+}
+//#endregion
+
+//#region Create Desktop Audio windows
+var sourceInput, sourceWidth, sourceHeight;
+const desktopAudioButton = document.getElementById('audioButton');
+desktopAudioButton.addEventListener("click", newAudioWindow);
+
+async function newAudioWindow() {
+  //get server details
+  const IP = document.getElementById('IP').value;
+  const Port = document.getElementById('Port').value;
+  const PW = document.getElementById('PW').value;
+  
+  //IPC message to open windows to start Media pipe
+  //const OpenDesktopAudio = document.getElementById('');
+  
+  const e = document.getElementById("audioIn");
+  console.log(e.value)
+  console.log(e.options[e.selectedIndex].text)
+  const sourceName = e.value;
+  const InputID = e.options[e.selectedIndex].id;
+  console.log(`${IP}, ${Port}, ${PW}, ${InputID}`);
+  
+  console.log("call main")
+  window.electronAPI.AudioInputWindow(IP, Port, PW, InputID, sourceName);
 }
 //#endregion
 
