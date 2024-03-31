@@ -36,7 +36,7 @@
   <input type="button" id="refreshInputs" value="Refresh list of Audio Inputs" />
   <br><br>
     
-  <input type="button" id="audioButton" value="Start Audio Capture" />
+  <input type="button" id="audioButton" value="Start Audio" />
   
   <h3>Midi Window</h3>
   <label for="midiIn">Choose a midi input source to capture:</label>
@@ -52,7 +52,20 @@
   <input type="button" id="refreshMidi" value="Refresh lists of Midi" />
   <br><br>
     
-  <input type="button" id="midiButton" value="Start Midi Pass Thru" />
+  <input type="button" id="midiButton" value="Start Midi" />
+
+
+  <h3>Gamepad Window</h3>
+  <label for="gamepad">Choose an audio input source to capture:</label>
+  <select name="gamepad" id="gamepad">
+    <option value="">--Please choose a source--</option>
+  </select>
+  <br>
+  <p id="controller"></p>
+  <!-- <input type="button" id="refreshGamepads" value="Refresh list of Gamepads" /> -->
+  <br><br>
+    
+  <input type="button" id="gamepadButton" value="Start Gamepad" />
 
   <br><br>
   <h3>Transparent Google Slides Player</h3>

@@ -6,6 +6,7 @@ const wsConnectButton = document.getElementById("WSconnectButton");
 const refreshPrjButton = document.getElementById("refreshProjector");
 const refreshInputButton = document.getElementById("refreshInputs");
 const refreshMidiButton = document.getElementById("refreshMidi");
+//const refreshGamepadButton = document.getElementById("refreshGamepads");
 
 let moveOffScreenButton, movePrimaryScreenButton;
 
@@ -18,6 +19,7 @@ async function loadScript() {
   loadProjectorOptions();
   getInputSources();
   getMidiSources();
+  //getGamepadSources();
 }
 
 //Connect to OBS Web Socket Server
@@ -27,6 +29,7 @@ wsConnectButton.addEventListener("click", startWSconnection);
 refreshPrjButton.addEventListener("click", ipcGetDesktopSources);
 refreshInputButton.addEventListener("click", getInputSources);
 refreshMidiButton.addEventListener("click", getMidiSources);
+//refreshGamepadButton.addEventListener("click", getGamepadSources);
 
 async function setWSdefaults() {
   console.log("set OBS connection defaults");
@@ -58,19 +61,56 @@ function getInputSources() {
   });
 }
 
-function getMidiSources() {
-  if(document.getElementById("MidiIn")){
-  document.getElementById("MidiIn").innerHTML = null;}
-  if(document.getElementById("MidiOut")){
-  document.getElementById("MidiOut").innerHTML = null;}
+window.addEventListener("gamepadconnected", (e) => {
+  console.log(
+    "Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    e.gamepad.index,
+    e.gamepad.id,
+    e.gamepad.buttons.length,
+    e.gamepad.axes.length,
+    e
+  );
+
   //console.log("list of Audio Input Sources")
-  
+  console.log("navigator:", navigator);
+  gamepads = navigator.getGamepads();
+
+  //clear list of gamepads
+  if (document.getElementById("gamepad")) {
+    document.getElementById("gamepad").innerHTML = null;
+  }
+
+  gamepads.forEach((device) => {
+    if (device) {
+      console.log(device);
+      if (device) {
+        //      console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
+        var x = document.getElementById("gamepad");
+        var option = document.createElement("option");
+        option.text = `${device.index} ${device.id}`;
+        option.id = device.index;
+        x.add(option);
+      }
+    }
+  });
+});
+
+function getMidiSources() {
+  //console.log(document.getElementById("MidiIn"))
+  if (document.getElementById("midiIn")) {
+    document.getElementById("midiIn").innerHTML = null;
+  }
+  if (document.getElementById("midiOut")) {
+    document.getElementById("midiOut").innerHTML = null;
+  }
+  //console.log("list of Audio Input Sources")
+
   //Access MIDI devices
   let midi = null; // global MIDIAccess object
   function onMIDISuccess(midiAccess) {
     console.log("MIDI ready!");
     midi = midiAccess; // store in the global (in real usage, would probably keep in an object instance)
-    listInputsAndOutputs(midi)
+    listInputsAndOutputs(midi);
   }
 
   function onMIDIFailure(msg) {
@@ -88,19 +128,19 @@ function getMidiSources() {
           ` id:'${input.id}'` +
           ` manufacturer:'${input.manufacturer}'` +
           ` name:'${input.name}'` +
-          ` version:'${input.version}'`,
-      )
+          ` version:'${input.version}'`
+      );
       var x = document.getElementById("midiIn");
       var option = document.createElement("option");
       option.text = input.name;
       option.id = input.id;
       x.add(option);
     }
-  
+
     for (const entry of midiAccess.outputs) {
       const output = entry[1];
       console.log(
-        `Output port [type:'${output.type}'] id:'${output.id}' manufacturer:'${output.manufacturer}' name:'${output.name}' version:'${output.version}'`,
+        `Output port [type:'${output.type}'] id:'${output.id}' manufacturer:'${output.manufacturer}' name:'${output.name}' version:'${output.version}'`
       );
       var x = document.getElementById("midiOut");
       var option = document.createElement("option");
@@ -109,9 +149,6 @@ function getMidiSources() {
       x.add(option);
     }
   }
-  
-
-
 }
 
 async function ipcGetDesktopSources() {
@@ -129,10 +166,12 @@ async function startWSconnection() {
 
   //connectOBS function in the obsConnect.js
   connectionResult = await connectOBS(IP, Port, PW);
-  console.log(connectionResult.socket)
-  if(connectionResult.socket){
-    document.getElementById("WSconnectButton").style.background='#00ff00';
-  }else{document.getElementById("WSconnectButton").style.background='#ff0000';}
+  console.log(connectionResult.socket);
+  if (connectionResult.socket) {
+    document.getElementById("WSconnectButton").style.background = "#00ff00";
+  } else {
+    document.getElementById("WSconnectButton").style.background = "#ff0000";
+  }
 
   //Save IP, Port,PW to file
   console.log("calling ipc contextBridge.");
@@ -204,7 +243,33 @@ async function newAudioWindow() {
   console.log(`${IP}, ${Port}, ${PW}, ${InputID}`);
 
   console.log("call main");
-  window.electronAPI.AudioInputWindow(IP, Port, PW, InputID, sourceName);
+  window.electronAPI.audioInputWindow(IP, Port, PW, InputID, sourceName);
+}
+//#endregion
+
+//#region Create Gamepad windows
+var gamepadInput;
+const gamepadButton = document.getElementById("gamepadButton");
+gamepadButton.addEventListener("click", newGamepadWindow);
+
+async function newGamepadWindow() {
+  //get server details
+  const IP = document.getElementById("IP").value;
+  const Port = document.getElementById("Port").value;
+  const PW = document.getElementById("PW").value;
+
+  //IPC message to open windows to start gamepad
+  //const OpenDesktopAudio = document.getElementById('');
+
+  const e = document.getElementById("gamepad");
+  console.log(e.value);
+  console.log(e.options[e.selectedIndex].text);
+  const gamepadName = e.value;
+  const gamepadID = e.options[e.selectedIndex].id;
+  console.log(`${IP}, ${Port}, ${PW}, ${gamepadID}`);
+
+  console.log("call main");
+  window.electronAPI.gamepadWindow(IP, Port, PW, gamepadID, gamepadName);
 }
 //#endregion
 
@@ -233,12 +298,21 @@ async function newMidiWindow() {
   const outMidiName = Out.value;
   const outMidiID = Out.options[In.selectedIndex].id;
 
-  console.log(`${IP}, ${Port}, ${PW}, ${inMidiID}, ${inMidiName}, ${outMidiID}, ${outMidiName}`);
+  console.log(
+    `${IP}, ${Port}, ${PW}, ${inMidiID}, ${inMidiName}, ${outMidiID}, ${outMidiName}`
+  );
   console.log("call main");
-  window.electronAPI.midiWindow(IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName);
+  window.electronAPI.midiWindow(
+    IP,
+    Port,
+    PW,
+    inMidiID,
+    inMidiName,
+    outMidiID,
+    outMidiName
+  );
 }
 //#endregion
-
 
 //#region Create Slide Window
 const slideButton = document.getElementById("SlidesButton");

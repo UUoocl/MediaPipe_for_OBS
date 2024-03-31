@@ -35,7 +35,7 @@ log.info('Log from the main process');
 //#endregion
 
 //window variables
-let mainWindow, slidesWindow, poseWindow;
+let mainWindow, slidesWindow, poseWindow, audioWindow, midiWindow, gamepadWindow;
 var windowSetup, source;
 var webSocketDetails = {
       "websocketIP": "",
@@ -65,7 +65,7 @@ async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 500,
-    height: 720,
+    height: 1000,
     x: 0,
     y: 0,
     title: __dirname,
@@ -118,7 +118,7 @@ ipcMain.on('open-pose-window', (event, IP, Port, PW, projectorID, sourceName) =>
 //#region Open-audioinput-windows
 ipcMain.on('open-audioinput-window', (event, IP, Port, PW, inputID,sourceName) => {
   console.log("main received IPC")
-  poseWindow = new BrowserWindow({
+  audioWindow = new BrowserWindow({
     width: 400,
     height: 400,
     x: 200,
@@ -144,7 +144,42 @@ ipcMain.on('open-audioinput-window', (event, IP, Port, PW, inputID,sourceName) =
     inputID: inputID
   };
   //console.log(windowSetup)
-  poseWindow.loadFile('audioInput.html');
+  audioWindow.loadFile('audioInput.html');
+  //poseWindow.webContents.openDevTools()
+})
+//#endregion
+
+//#region Open-gamepad-windows
+ipcMain.on('open-gamepad-window', (event, IP, Port, PW, gamepadID, gamepadName) => {
+  console.log("main received gamepad IPC")
+  gamepadWindow = new BrowserWindow({
+    width: 1000,
+    height: 400,
+    x: 200,
+    y: 100,
+    title: gamepadName,
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'gamepad-preload.js')
+    }
+  })
+
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW,
+    gamepadID: gamepadID,
+    gamepadName: gamepadName
+  };
+  //console.log(windowSetup)
+  gamepadWindow.loadFile('gamepad.html');
   //poseWindow.webContents.openDevTools()
 })
 //#endregion
@@ -152,7 +187,7 @@ ipcMain.on('open-audioinput-window', (event, IP, Port, PW, inputID,sourceName) =
 //#region Open-midi-windows
 ipcMain.on('open-midi-window', (event, IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => {
   console.log("main received IPC")
-  poseWindow = new BrowserWindow({
+  midiWindow = new BrowserWindow({
     width: 400,
     height: 400,
     x: 200,
@@ -181,7 +216,7 @@ ipcMain.on('open-midi-window', (event, IP, Port, PW, inMidiID, inMidiName, outMi
     outputName: outMidiName
   };
   //console.log(windowSetup)
-  poseWindow.loadFile('midi.html');
+  midiWindow.loadFile('midi.html');
   //poseWindow.webContents.openDevTools()
 })
 //#endregion
