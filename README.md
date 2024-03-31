@@ -23,8 +23,8 @@ C ---> |WebSocket|D;
 ```
 
 ## OBS Setup
-MediaPipe for OBS app needs 
-1. the OBS Web Socket Server,
+MediaPipe for OBS app requirements
+1. Enable the OBS Web Socket Server ,
 2. an OBS Video source with a projector window
 3. A Browser or Advanced Scene Switcher to receive the landmark data
 
@@ -49,6 +49,7 @@ MediaPipe for OBS app needs
 ### Create a Browser Source
 Load a local html file with an event listener. 
 The landmarks will be sent as an evnt named "pose-landmarks".  
+See the creative example folder for example HTML pages.  
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/6d158908-8a9d-41de-b0e1-e775edab998c)
 
 
@@ -57,17 +58,22 @@ Each Landmark has an X, Y, Z and Visability value.
 Messages are also sent the Advanced Scene Switcher Plugin with the values as the message
 
 ## Using MediaPipe for OBS
-Download the latest [release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
-![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/093f216d-4c09-4cec-8c47-b659178a49d9)
+Download the latest
+
+[release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
+
+<img width="411" alt="image" src="https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/563fad09-399e-4dfe-ba14-5f5c203d060f">
+
 
 **MacOS note: Before using the MediaPipe for OBS, Add permissions in Settings-->Privacy & Security-->Screen Recording & System Audio. 
 
-- ### Enter the OBS WebSocket details 
+- ### Enter the OBS WebSocket details, and press the "Connect to OBS" button
 
 - ### Choose a projector window
 - ### press the "Start MediaPipe" Button
 ![image](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/eb79cb1e-82ab-4351-abbe-862b0245964e)
 
+A log file of the landmarks is saved to the folder "~/Library/Logs/MediaPipe_for_OBS/"
 
 ## Dev install
 Steps to setup a developement environment. 
