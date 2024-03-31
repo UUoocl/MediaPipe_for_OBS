@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 var windowId, Sources;
-var scripts = ["./webSocket_server_setting.js",
+var scripts = [
               "./obs-ws.js",
               "./obsConnect.js",
               "./renderer.js"]
@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   //cameraWindow: (CameraID) => ipcRenderer.send('open-camera-window', CameraID),
   poseWindow: (IP, Port, PW, projectorID, sourceName) => ipcRenderer.send('open-pose-window',IP, Port, PW, projectorID, sourceName),
   AudioInputWindow: (IP, Port, PW, InputID,sourceName) => ipcRenderer.send('open-audioinput-window',IP, Port, PW, InputID,sourceName),
+  midiWindow: (IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => ipcRenderer.send('open-midi-window',IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName),
   //segmentationWindow: () => ipcRenderer.send('open-segmentation-window'),
   //getCameraId: () => ipcRenderer.send('get-cameras'),
   //moveWindowsOffScreen: () => ipcRenderer.send('move-windows-off-screen'),

@@ -149,6 +149,42 @@ ipcMain.on('open-audioinput-window', (event, IP, Port, PW, inputID,sourceName) =
 })
 //#endregion
 
+//#region Open-midi-windows
+ipcMain.on('open-midi-window', (event, IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => {
+  console.log("main received IPC")
+  poseWindow = new BrowserWindow({
+    width: 400,
+    height: 400,
+    x: 200,
+    y: 100,
+    title: inMidiName,
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'midi-preload.js')
+    }
+  })
+
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW,
+    inputID: inMidiID,
+    inputName: inMidiName,
+    outputID: outMidiID,
+    outputName: outMidiName
+  };
+  //console.log(windowSetup)
+  poseWindow.loadFile('midi.html');
+  //poseWindow.webContents.openDevTools()
+})
+//#endregion
 
 //#region Open-Slide-windows
 ipcMain.on('open-slide-window', (event, IP, Port, PW, Link) => {
@@ -253,7 +289,6 @@ ipcMain.handle('get-obs-connection', async (event) => {
   if(fs.existsSync(`${userpath}/webSocket_server_setting.txt`)){
     let dt = fs.readFileSync(`${userpath}/webSocket_server_setting.txt`)
     let data = JSON.parse(dt)
-    console.log(dt)
     console.log(data)
     return data
   }

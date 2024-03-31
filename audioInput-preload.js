@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     handleGetOBSWSdetails: () => ipcRenderer.invoke('get-obsWSdetails')
 })
 
-var scripts = [{"source":"./webSocket_server_setting.js","type":"","async":false},
+var scripts = [
 {"source":"./obs-ws.js","type":"","async":false},
 {"source":"./obsConnect.js","type":"","async":false},
 {"source":"./audioInput-renderer.js","type":"","async":false}

@@ -7,7 +7,7 @@ var setupDetails,
   windowID,
   sourceName,
   MPvalues;
-var frameRate, FPSElement, canvasElement;
+var frameRate, FPSElement, canvasElement, IP, PORT, PW;
 var now;
 var then = Date.now();
 var interval;
@@ -55,17 +55,16 @@ async function loadRenderer() {
     setupDetails.websocketPort,
     setupDetails.websocketPassword,
     setupDetails.inputID)
+    IP = setupDetails.websocketIP
+    PORT = setupDetails.websocketPort
+    PW =  setupDetails.websocketPassword
 
   // await connectOBS(wss.ip,
   //   wss.port,
   //   wss.pw,
   //   )
 
-  await connectOBS(
-    setupDetails.websocketIP,
-    setupDetails.websocketPort,
-    setupDetails.websocketPassword
-  );
+  await connectOBS(IP,PORT,PW)
 
   //get source width and Height
   console.log("get ");
@@ -142,7 +141,7 @@ function Analyze(stream) {
         vendorName: "obs-browser",
       requestType: "emit_event",
       requestData: {
-        event_name: "pose-landmarks",
+        event_name: "audio-input",
         event_data: { dataArray},
       },
     });
