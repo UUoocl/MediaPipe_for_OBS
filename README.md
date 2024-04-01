@@ -97,6 +97,7 @@ npm run make
 
 
 # OBS Connections
+MediaPipe for OBS is a part of a meeting and presentation automation project. 
 
 ```mermaid
 flowchart LR
