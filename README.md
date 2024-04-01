@@ -100,49 +100,24 @@ npm run make
 
 ```mermaid
 flowchart LR
-
 O4O["OSC for OBS"]
-XL[Excel]
 GC[Game 🎮\n Controllers]
-MnStg[MainStage]
-TOSC[TouchOSC]
-TD[TouchDesigner]
 MP["MediaPipe \n Pose"]
 GAS["Google \n Apps \n Scripts"]
 GS["Google \n Sheets🗃️"]
 Midi["Midi 🎹 \n Devices"]
 AS["Command\nline"]
-%%OBSBOT_Center["OBSBOT Center"]
 ZOSC[ZoomOSC]
-%%Shortcuts[MacOS\nShortcuts]
 
-
-%%MP --websocket-->ss
-%%MP -->obs-b
-GC-->TOSC
+GC-->MP
+Midi--"midi"-->MP
 ZOSC--"osc"-->O4O
-TOSC--midi-->ss
-ss--"ocs"-->TD
-ss--"ocs"-->ZOSC
-%%ss--"ocs"-->OBSBOT_Center
-O4O--"ws"-->wss
 MP --"ws"-->wss
-TD --"osc"--> O4O
-Midi<---->|midi|ss
-%%ss<--midi-->Midi
-%%ss<--midi-->MnStg
-%%TOSC --"ocs2 out"--> ZOSC
-%%TOSC <--"ocs3"--> O4O
-XL <--"ws"--> wss
-%%Midi <--> TOSC
-%%TOSC<--"ocs1"-->OBSBOT_Center
-%%TD---ss
-%%ss--"ocs2 in"-->TOSC
-MnStg<--"midi"-->ss
+O4O--"ws"-->wss
+lua-->AS
 GAS<--gs-->GS
 obs-b<--"js"-->GAS
-lua-->AS
-%%lua-->Shortcuts
+ss--"osc"-->ZOSC
 subgraph OBS[OBS]
     direction LR
 
@@ -152,23 +127,14 @@ subgraph OBS[OBS]
     wss["WebSocket \nServer"]
     
     ss--hotkey-->lua
-    %%wss<-->obs-b
-    %%util<-->camera["USB \n PTZ \n Camera"] 
     ss<--"ws"-->wss
     obs-b<--"ws"-->wss
-    %%wss<-->ss
     lua<-->obs-b
     lua<-->util["uvc \n util"]
+    
 end
 
-%%subgraph Zoom Clients
-    %%ZOSC[ZoomOSC]
-    %%Zoom
-    %%ZoomShortcuts
-%%end
-
-
-
 linkStyle default stroke-width:4px,fill:none,stroke:green;
-linkStyle 0,1,3,2,4,5,6,7,13,14 stroke-width:4px,fill:none,stroke:blue;
+linkStyle 0,1,2,3,4,5,8 stroke-width:4px,fill:none,stroke:blue;
+
 ```
