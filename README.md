@@ -62,7 +62,8 @@ Download the latest
 
 [release](https://github.com/UUoocl/MediaPipe_for_OBS/releases)
 
-<img width="411" alt="image" src="https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/563fad09-399e-4dfe-ba14-5f5c203d060f">
+<img width="411" alt="image" src="https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/59be3636-5a43-4232-8748-e6c66fe82628">
+
 
 
 **MacOS note: Before using the MediaPipe for OBS, Add permissions in Settings-->Privacy & Security-->Screen Recording & System Audio. 
@@ -103,7 +104,7 @@ MediaPipe for OBS is a part of a meeting and presentation automation project.
 flowchart LR
 O4O["OSC for OBS"]
 GC[Game 🎮\n Controllers]
-MP["MediaPipe \n Pose"]
+MP["MediaPipe +"]
 GAS["Google \n Apps \n Scripts"]
 GS["Google \n Sheets🗃️"]
 Midi["Midi 🎹 \n Devices"]
