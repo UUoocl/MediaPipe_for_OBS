@@ -7,7 +7,6 @@
     "NSMicrophoneUsageDescription": "Please give us access to your microphone",
     "com.apple.security.device.audio-input": true
   },
-
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,14 +21,14 @@
     "@electron-forge/maker-rpm": "^7.3.1",
     "@electron-forge/maker-squirrel": "^7.3.1",
     "@electron-forge/maker-zip": "^7.3.1",
-
+    "@electron-forge/plugin-fuses": "^7.3.1",
     "@mediapipe/tasks-vision": "0.10.12",
     "electron": "^28.2.9",
     "obs-websocket-js": "^5.0.4"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "0.10.12",
-    "electron-log": "^5.1.2"
-  
+    "electron-log": "^5.1.2",
+    "node-osc": "^9.1.1"
   }
 }

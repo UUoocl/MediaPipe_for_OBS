@@ -314,6 +314,33 @@ async function newMidiWindow() {
 }
 //#endregion
 
+//#region Create OSC windows
+var oscInput;
+const oscButton = document.getElementById("oscButton");
+oscButton.addEventListener("click", newOscWindow);
+
+async function newOscWindow() {
+  //get server details
+  const IP = document.getElementById("IP").value;
+  const Port = document.getElementById("Port").value;
+  const PW = document.getElementById("PW").value;
+  const oscIP = document.getElementById("oscIP").value;
+  const oscPORT = document.getElementById("oscPORT").value;
+
+  console.log(
+    `${IP}, ${Port}, ${PW}, ${oscIP}, ${oscPORT}`
+  );
+  console.log("call main");
+  window.electronAPI.oscWindow(
+    IP,
+    Port,
+    PW,
+    oscPORT,
+    oscIP
+  );
+}
+//#endregion
+
 //#region Create Slide Window
 const slideButton = document.getElementById("SlidesButton");
 slideButton.addEventListener("click", newSlideWindow);

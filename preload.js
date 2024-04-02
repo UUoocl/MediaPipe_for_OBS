@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   audioInputWindow: (IP, Port, PW, InputID,sourceName) => ipcRenderer.send('open-audioinput-window',IP, Port, PW, InputID,sourceName),
   midiWindow: (IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => ipcRenderer.send('open-midi-window',IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName),
   gamepadWindow: (IP, Port, PW, gamepadID, gamepadName) => ipcRenderer.send('open-gamepad-window',IP, Port, PW, gamepadID, gamepadName),
+  oscWindow: (IP, Port, PW, oscIP, oscPORT) => ipcRenderer.send('open-osc-window',IP, Port, PW, oscIP, oscPORT),
   //segmentationWindow: () => ipcRenderer.send('open-segmentation-window'),
   //getCameraId: () => ipcRenderer.send('get-cameras'),
   //moveWindowsOffScreen: () => ipcRenderer.send('move-windows-off-screen'),

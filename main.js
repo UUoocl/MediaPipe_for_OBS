@@ -2,6 +2,7 @@ const { app, BrowserWindow, desktopCapturer, ipcMain } = require('electron/main'
 const path = require('path')
 const log = require('electron-log');
 const fs = require('fs'); 
+const Server = require('node-osc');
 
 //macOS microphone permission
 const { systemPreferences } = require('electron')
@@ -35,7 +36,7 @@ log.info('Log from the main process');
 //#endregion
 
 //window variables
-let mainWindow, slidesWindow, poseWindow, audioWindow, midiWindow, gamepadWindow;
+let mainWindow, slidesWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow;
 var windowSetup, source;
 var webSocketDetails = {
       "websocketIP": "",
@@ -65,7 +66,7 @@ async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 500,
-    height: 1000,
+    height: 700,
     x: 0,
     y: 0,
     title: __dirname,
@@ -78,7 +79,7 @@ async function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 }
 //#endregion
 
@@ -221,6 +222,43 @@ ipcMain.on('open-midi-window', (event, IP, Port, PW, inMidiID, inMidiName, outMi
 })
 //#endregion
 
+//#region Open-osc-windows
+ipcMain.on('open-osc-window', (event, IP, Port, PW, oscPORT, oscIP) => {
+  console.log("main received osc window IPC")
+  oscWindow = new BrowserWindow({
+    width: 400,
+    height: 400,
+    x: 200,
+    y: 100,
+    title: "osc window",
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      sandbox: false,
+      nodeIntegration: true,
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'osc-preload.js')
+    }
+  })
+
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW,
+    oscPORT: oscPORT,
+    oscIP: oscIP
+  };
+  //console.log(windowSetup)
+  oscWindow.loadFile('osc.html');
+  oscWindow.webContents.openDevTools()
+})
+//#endregion
+
 //#region Open-Slide-windows
 ipcMain.on('open-slide-window', (event, IP, Port, PW, Link) => {
   slidesWindow = new BrowserWindow({
@@ -278,7 +316,7 @@ ipcMain.on('open-slide-window', (event, IP, Port, PW, Link) => {
 //#region IPC APIs
 //Send websocket and projector window to renderer
 ipcMain.handle('get-obsWSdetails', async () => {
-  console.log("sending websocket and projector window details to new window")
+  console.log("sending window details to a new window")
   console.log(windowSetup)
   return windowSetup;
 })
