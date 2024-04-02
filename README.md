@@ -134,8 +134,7 @@ subgraph OBS[OBS]
     lua<-->obs-b
     lua<-->util["uvc \n util"]
 end
-
 linkStyle default stroke-width:4px,fill:none,stroke:green;
-linkStyle 0,1,2,3,4,5,8,9 stroke-width:4px,fill:none,stroke:blue;
+linkStyle 0,1,2,3,4,5,8 stroke-width:4px,fill:none,stroke:blue;
 
 ```
