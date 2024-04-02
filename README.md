@@ -102,20 +102,20 @@ MediaPipe for OBS is a part of a meeting and presentation automation project.
 
 ```mermaid
 flowchart LR
-O4O["OSC for OBS"]
+
 GC[Game 🎮\n Controllers]
-MP["MediaPipe +"]
+MP["MediaPipe\nfor OBS"]
 GAS["Google \n Apps \n Scripts"]
-GS["Google \n Sheets🗃️"]
+GS["Google \n 🗃️"]
 Midi["Midi 🎹 \n Devices"]
 AS["Command\nline"]
 ZOSC[ZoomOSC]
 
 GC-->MP
 Midi--"midi"-->MP
-ZOSC--"osc"-->O4O
+ZOSC--"osc"-->MP
 MP --"ws"-->wss
-O4O--"ws"-->wss
+%%O4O--"ws"-->wss
 lua-->AS
 GAS<--gs-->GS
 obs-b<--"js"-->GAS
@@ -133,7 +133,6 @@ subgraph OBS[OBS]
     obs-b<--"ws"-->wss
     lua<-->obs-b
     lua<-->util["uvc \n util"]
-    
 end
 
 linkStyle default stroke-width:4px,fill:none,stroke:green;
