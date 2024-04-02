@@ -115,11 +115,10 @@ GC-->MP
 Midi--"midi"-->MP
 ZOSC--"osc"-->MP
 MP --"ws"-->wss
-%%O4O--"ws"-->wss
 lua-->AS
-GAS<--gs-->GS
-obs-b<--"js"-->GAS
 ss--"osc"-->ZOSC
+obs-b<--"js"-->GAS
+GAS<--gs-->GS
 subgraph OBS[OBS]
     direction LR
 
@@ -133,7 +132,9 @@ subgraph OBS[OBS]
     obs-b<--"ws"-->wss
     lua<-->obs-b
     lua<-->util["uvc \n util"]
+    
 end
+
 linkStyle default stroke-width:4px,fill:none,stroke:green;
 linkStyle 0,1,2,3,4,5,8 stroke-width:4px,fill:none,stroke:blue;
 
