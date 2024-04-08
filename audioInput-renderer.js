@@ -136,6 +136,7 @@ function Analyze(stream) {
     if (delta > interval) {
       then = now - (delta % interval);
       console.log(dataArray);
+      
       //send results to OBS Browser Source
       obs.call("CallVendorRequest", {
         vendorName: "obs-browser",

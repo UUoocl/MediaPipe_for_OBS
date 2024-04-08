@@ -103,11 +103,28 @@ function updateStatus() {
       a.setAttribute("value", controller.axes[i]);
       sum += Math.abs(controller.axes[i]);
     }
-  }
-  //if sum is > 0 a button is pressed or stick moved
-  if (sum > 0) {
-    //send message to OBS Browser and Advanced Scene Switcher
-      const webSocketMessage = JSON.stringify(controller);
+    //if sum is > 0 a button is pressed or stick moved
+    if (sum > 0) {
+      //send message to OBS Browser and Advanced Scene Switcher
+      
+      const webSocketMessage = JSON.stringify(
+        navigator.getGamepads()
+        .filter(p => p).filter(p => p.index == gamepadID)
+        .map(pad => ({
+            index: pad.index,
+            id: pad.id,
+            mapping: pad.mapping,
+            axes: pad.axes,
+            buttons: [...pad.buttons].map(b => ({
+                pressed: b.pressed,
+                touched: b.touched,
+                value: b.value
+            })),
+            vibrationActuator: pad.vibrationActuator
+        })),
+        null,
+        2
+    )
       //send results to OBS Browser Source
       obs.call("CallVendorRequest", {
         vendorName: "obs-browser",
@@ -117,7 +134,7 @@ function updateStatus() {
           event_data: { webSocketMessage },
         },
       });
-
+      
       //send results to Advanced Scene Switcher
       obs.call("CallVendorRequest", {
         vendorName: "AdvancedSceneSwitcher",
@@ -127,6 +144,7 @@ function updateStatus() {
         },
       });
     }
+  }
   rAF(updateStatus);
 }
 

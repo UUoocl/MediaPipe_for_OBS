@@ -44,7 +44,9 @@ async function setWSdefaults() {
 }
 
 function getInputSources() {
+  if (document.getElementById("audioIn")) {
   document.getElementById("audioIn").innerHTML = null;
+  }
   //console.log("list of Audio Input Sources")
   navigator.mediaDevices.enumerateDevices().then((devices) => {
     devices.forEach((device) => {
@@ -159,11 +161,12 @@ async function ipcGetDesktopSources() {
 }
 
 async function startWSconnection() {
+  document.getElementById("WSconnectButton").style.background = "#ff0000";
   const IP = document.getElementById("IP").value;
   const Port = document.getElementById("Port").value;
   const PW = document.getElementById("PW").value;
   console.log("obsConnect js called", IP, Port, PW);
-
+  
   //connectOBS function in the obsConnect.js
   connectionResult = await connectOBS(IP, Port, PW);
   console.log(connectionResult.socket);
@@ -341,18 +344,24 @@ async function newOscWindow() {
 }
 //#endregion
 
-//#region Create Slide Window
-const slideButton = document.getElementById("SlidesButton");
-slideButton.addEventListener("click", newSlideWindow);
+//#region MediaPipe text sentiment window
+const sentimentButton = document.getElementById("SentimentButton");
+sentimentButton.addEventListener("click", newSentimentWindow);
 
-function newSlideWindow() {
+async function newSentimentWindow() {
+  //get server details
   const IP = document.getElementById("IP").value;
   const Port = document.getElementById("Port").value;
   const PW = document.getElementById("PW").value;
-  const Link = document.getElementById("Link").value;
-
-  console.log(`${IP}, ${Port}, ${PW}, ${Link}`);
-
-  window.electronAPI.slideWindow(IP, Port, PW, Link);
+  
+  console.log(
+    `${IP}, ${Port}, ${PW}`
+  );
+  console.log("call main");
+  window.electronAPI.sentimentWindow(
+    IP,
+    Port,
+    PW
+  );
 }
 //#endregion

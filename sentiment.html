@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8" />
+    <title>MediaPipe Pose</title>
+    
+    <style>
+      @use "@material";
+      
+      body {
+        font-family: roboto;
+        margin: 2em;
+        color: #3d3d3d;
+        --mdc-theme-primary: #007f8b;
+        --mdc-theme-on-primary: #f1f3f4;
+      }
+      
+      h1 {
+        color: #007f8b;
+      }
+      
+      h2 {
+        clear: both;
+      }
+      
+      button {
+        min-width: 200px;
+        height: 50px;
+      }
+      
+      section {
+        opacity: 1;
+        transition: opacity 500ms ease-in-out;
+      }
+      
+      #input {
+        height: 100px;
+        --mdc-theme-primary: #12b5cb;
+        --mdc-theme-on-primary: #f1f3f4;
+      }
+      
+      #output {
+        min-height: 100px;
+        min-width: 500px;
+        font-weight: bold;
+      }
+      
+      .invisible {
+        opacity: 0.2;
+      }
+      
+      #submit {
+        margin-top: 20px;
+      }
+      </style>
+</head>
+
+<body>
+  <!--
+    https://developers.google.com/mediapipe/solutions/text/text_classifier
+    https://developers.google.com/mediapipe/solutions/text/text_classifier/web_js
+    https://codepen.io/mediapipe-preview/pen/wvXebMW
+   -->
+  <!-- Copyright 2023 The MediaPipe Authors.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+  <h1>Classifying text with the MediaPipe Text Classifier Task</h1>
+  <p>This demo runs sentiment analysis on the input text from OBS. The result shows how likely the input text is to have a
+    positive or negative sentiment.
+
+    
+    <section id="demos" class="invisible">
+      <h2>How to use</h2>
+      Audio is transcribed to text by the LocalVocal plugin and the Advacned Scene Switcher plugin sends the text to this page.
+      <p><b>Input:
+      </b>
+    </p>
+    <label>
+      <span ></span>
+      <span >
+
+        <textarea id="input" rows="8" cols="40" aria-label="Text Input"></textarea>
+      </span>
+      <span></span>
+    </label></br>
+    <button id="submit">
+      <span>CLASSIFY</span>
+    </button></br>
+
+    <p><b>Sentiment:</b></p>
+    <p id="output"></p>
+  </section>
+</body>
+
+</html>

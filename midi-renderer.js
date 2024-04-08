@@ -30,13 +30,13 @@ async function loadRenderer() {
     PW =  setupDetails.websocketPassword
     midiOutID =  setupDetails.outoutID
     midiInID = setupDetails.inputID
-  // await connectOBS(wss.ip,
-  //   wss.port,
-  //   wss.pw,
-  //   )
+
 
   await connectOBS(IP,PORT,PW)
-}//   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+}
+
+
+//   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 // }
 
 // //Access MIDI devices

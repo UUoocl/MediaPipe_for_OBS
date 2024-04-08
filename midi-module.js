@@ -16,7 +16,7 @@ function onEnabled() {
         //midiInIndex = index;
         addDeviceListener(index);
       }
-      document.body.innerHTML += `${index}: ${device.name} <br>`;
+      document.getElementById("midi").innerHTML += `${index}: ${device.name} <br>`;
     });
   }
   // const mySynth = WebMidi.inputs[0];
@@ -37,8 +37,7 @@ function onEnabled() {
 
     //send message to OBS Browser and Advanced Scene Switcher
     function sendMidiMessage(e){
-        document.body.innerHTML += `${e} <br>`;
-        console.log(JSON.stringify(e.message));
+        document.getElementById("midiData").innerHTML = `${JSON.stringify(e.message)} <br> ${document.getElementById("midiData").innerHTML}`;
         const webSocketMessage = JSON.stringify(e.message)
     //send results to OBS Browser Source
      obs.call("CallVendorRequest", {

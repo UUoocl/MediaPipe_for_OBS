@@ -36,7 +36,7 @@ log.info('Log from the main process');
 //#endregion
 
 //window variables
-let mainWindow, slidesWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow;
+let mainWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow, sentimentWindow;
 var windowSetup, source;
 var webSocketDetails = {
       "websocketIP": "",
@@ -65,7 +65,7 @@ app.on('window-all-closed', () => {
 async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 500,
+    width: 1000,
     height: 700,
     x: 0,
     y: 0,
@@ -76,6 +76,10 @@ async function createWindow() {
   })
 
   // and load the index.html of the app.
+  //mainWindow.loadFile('index.html')
+  //mainWindow.loadFile('revealIndex.html')
+  //mainWindow.loadFile('customindex.html')
+  //mainWindow.loadFile('obsIndex.html')
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
@@ -259,57 +263,36 @@ ipcMain.on('open-osc-window', (event, IP, Port, PW, oscPORT, oscIP) => {
 })
 //#endregion
 
-//#region Open-Slide-windows
-ipcMain.on('open-slide-window', (event, IP, Port, PW, Link) => {
-  slidesWindow = new BrowserWindow({
-    width: 960,
-    height: 540,
-    x: -1,
-    y: 0,
+//#region Open-sentiment-windows
+ipcMain.on('open-sentiment-window', (event, IP, Port, PW) => {
+  console.log("main received sentiment IPC")
+  sentimentWindow = new BrowserWindow({
+    width: 800,
+    height: 1000,
+    x: 100,
+    y: 100,
     frame: true,
+    resizable: true,
+    //roundedCorners: false,
     movable: true,
-    titleBarOverlay: true,
-    backgroundThrottling: false,
-    transparent: true,
-    titleBarStyle: 'customButtonsOnHover',
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
     webPreferences: {
-      preload: path.join(__dirname, 'slides-preload.js')
-      }
-    })
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'sentiment-preload.js')
+    }
+  })
 
-    windowSetup = {
-      websocketIP: IP,
-      websocketPort: Port,
-      websocketPassword: PW,
-      slidesLink: Link
-    };
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW
+  };
+  //console.log(windowSetup)
+  sentimentWindow.loadFile('sentiment.html');
+  sentimentWindow.webContents.openDevTools()
 
-    slidesWindow.loadURL(Link);    
-
-    //slidesWindow.webContents.openDevTools()
-    slidesWindow.webContents.setWindowOpenHandler(({ event, url }) => {
-      console.log(event)
-      if (true) {
-          return {
-          action: 'allow',
-          backgroundThrottling: false,
-          movable: true,
-          overrideBrowserWindowOptions: {
-            frame: true,
-            x: 0,
-            y: 0,
-            backgroundThrottling: false,
-            fullscreenable: false,
-            backgroundColor: 'white',
-            webPreferences: {
-              preload: path.join(__dirname,'slides-popup-preload.js')
-            }
-          }
-        }
-      }
-      return { action: 'deny' }
-    })
-      console.log("sending appPath to new window") 
 })
 //#endregion
 
@@ -337,6 +320,7 @@ ipcMain.handle('get-desktop-sources', async () => {
   //console.log(results.map((result) => [result.name, result.id]));
 })
 //#endregion
+
 //#region IPC set OBS connection
 ipcMain.on('set-obs-connection', async (event, IP, Port, PW ) => {
   console.log('setting OBS Connection')
@@ -372,30 +356,4 @@ ipcMain.on('wsConnect', (event) => {
   console.log(webSocketDetails )
   event.returnValue = webSocketDetails
 })
-//#endregion
-
-//#region IPC Slides APIs
-ipcMain.on('change-slide', (event, Direction) => {
-    if(Direction == "Next"){
-        console.log("sending next slide message to slide window") 
-        slidesWindow.webContents.send('next-slide');
-    }else{
-        console.log("sending previous slide message to slide window") 
-        slidesWindow.webContents.send('previous-slide');
-    }
-})
-
-ipcMain.on('move-windows-off-screen', (event) => {
-  //cascade the windows off screen
-  slidesWindow.setPosition(-1920, 300);
-  slidesWindow.focus();
-  mainWindow.focus();
-})
-
-ipcMain.on('move-windows-to-primary-screen', (event) => {
-  slidesWindow.setPosition(-1,0);
-  slidesWindow.focus();
-  mainWindow.focus();
-})
-//#endregion
 //#endregion
