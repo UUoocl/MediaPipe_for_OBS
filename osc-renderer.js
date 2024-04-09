@@ -7,7 +7,7 @@ var setupDetails,
   windowID,
   sourceName,
   MPvalues;
-var frameRate, FPSElement, canvasElement, IP, PORT, PW;
+var frameRate, FPSElement, canvasElement, IP, PORT, PW, oscIP, oscInPORT, oscOutPORT;
 var now;
 var then = Date.now();
 var interval;
@@ -24,15 +24,17 @@ async function loadRenderer() {
     setupDetails.websocketPort,
     setupDetails.websocketPassword,
     setupDetails.inputID)
+
     IP = setupDetails.websocketIP
     PORT = setupDetails.websocketPort
     PW =  setupDetails.websocketPassword
     oscIP = setupDetails.oscIP
-    oscPORT = setupDetails.oscPORT
+    oscInPORT = setupDetails.oscInPORT
+    oscOutPORT = setupDetails.oscInPORT
 
   // await connectOBS(wss.ip,
   //   wss.port,
   //   wss.pw,
   //   )
-    await window.electronAPI.createOCSserver(IP,PORT,PW, oscIP, oscPORT);
+    await window.electronAPI.createOCSserver(IP,PORT,PW, oscIP, oscInPORT,oscOutPORT);
 }

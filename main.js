@@ -5,8 +5,9 @@ const fs = require('fs');
 const Server = require('node-osc');
 
 //macOS microphone permission
-const { systemPreferences } = require('electron')
-const microphone = systemPreferences.askForMediaAccess('microphone');
+
+// const { systemPreferences } = require('electron')
+// const microphone = systemPreferences.askForMediaAccess('microphone');
 
 
 //#region log file
@@ -76,14 +77,10 @@ async function createWindow() {
   })
 
   // and load the index.html of the app.
-  //mainWindow.loadFile('index.html')
-  //mainWindow.loadFile('revealIndex.html')
-  //mainWindow.loadFile('customindex.html')
-  //mainWindow.loadFile('obsIndex.html')
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 //#endregion
 
@@ -227,7 +224,7 @@ ipcMain.on('open-midi-window', (event, IP, Port, PW, inMidiID, inMidiName, outMi
 //#endregion
 
 //#region Open-osc-windows
-ipcMain.on('open-osc-window', (event, IP, Port, PW, oscPORT, oscIP) => {
+ipcMain.on('open-osc-window', (event, IP, Port, PW, oscIP, oscInPORT,oscOutPORT) => {
   console.log("main received osc window IPC")
   oscWindow = new BrowserWindow({
     width: 400,
@@ -254,7 +251,8 @@ ipcMain.on('open-osc-window', (event, IP, Port, PW, oscPORT, oscIP) => {
     websocketIP: IP,
     websocketPort: Port,
     websocketPassword: PW,
-    oscPORT: oscPORT,
+    oscInPORT: oscInPORT,
+    oscOutPORT: oscOutPORT,
     oscIP: oscIP
   };
   //console.log(windowSetup)
@@ -357,3 +355,10 @@ ipcMain.on('wsConnect', (event) => {
   event.returnValue = webSocketDetails
 })
 //#endregion
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
+})
