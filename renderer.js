@@ -328,18 +328,20 @@ async function newOscWindow() {
   const Port = document.getElementById("Port").value;
   const PW = document.getElementById("PW").value;
   const oscIP = document.getElementById("oscIP").value;
-  const oscPORT = document.getElementById("oscPORT").value;
+  const oscInPORT = document.getElementById("oscInPORT").value;
+  const oscOutPORT = document.getElementById("oscOutPORT").value;
 
   console.log(
-    `${IP}, ${Port}, ${PW}, ${oscIP}, ${oscPORT}`
+    `${IP}, ${Port}, ${PW}, ${oscIP}, ${oscInPORT},${oscOutPORT}`
   );
   console.log("call main");
   window.electronAPI.oscWindow(
     IP,
     Port,
     PW,
-    oscPORT,
-    oscIP
+    oscIP, 
+    oscInPORT,
+    oscOutPORT
   );
 }
 //#endregion
