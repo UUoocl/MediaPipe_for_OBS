@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8" />
+    <title>Media Tester</title>
+    
+    <style>
+      @use "@material";
+      
+      body {
+        font-family: roboto;
+        margin: 2em;
+        color: #3d3d3d;
+        background-color: antiquewhite;
+
+      }
+      
+      h1 {
+        color: #007f8b;
+      }
+      
+      h2 {
+        clear: both;
+      }
+      
+      
+      section {
+          opacity: 1;
+          transition: opacity 500ms ease-in-out;
+        }
+        
+        #output {
+            min-height: 100px;
+            min-width: 500px;
+            font-weight: bold;
+        }
+
+        .collapsible {
+          background-color: #777;
+          color: white;
+          cursor: pointer;
+          padding: 18px;
+          width: 100%;
+          border: none;
+          text-align: left;
+          outline: none;
+          font-size: 15px;
+        }
+        
+        .active, .collapsible:hover {
+          background-color: #555;
+        }
+        
+        .content {
+          padding: 0 18px;
+          display: none;
+          overflow: hidden;
+          background-color: #f1f1f1;
+        }
+      </style>
+</head>
+
+<body>
+  <h1>Testing the websocket messages from MediaPipe for OBS</h1>
+  <p>This tests that each media is being received</p>
+
+    
+    <section id="media">
+        <button type="button" class="collapsible">MediaPipe Pose Detection</button>
+        <div class="content">
+            <p id="poseResults">    </p>
+        </div>
+        <button type="button" class="collapsible">MediaPipe Text Sentiment</button>
+        <div class="content">
+            <p id="sentimentResult">    </p>
+        </div>
+        <button type="button" class="collapsible">Audio Frequency</button>
+        <div class="content">
+            <p id="audioFFT">    </p>
+        </div>
+        <button type="button" class="collapsible">Midi Data</button>
+        <div class="content">
+            <p id="midiMessage">    </p>
+        </div>
+        <button type="button" class="collapsible">Gamepad Data</button>
+        <div class="content">
+            <p id="gamepad-message">    </p>
+        </div>
+        <button type="button" class="collapsible">OSC Server</button>
+        <div class="content">
+            <p id="osc-message">    </p>
+        </div>
+    </section>
+    <script src="webSocketTester.js"></script>
+        
+        <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+        </script>
+</body>
+
+</html>
