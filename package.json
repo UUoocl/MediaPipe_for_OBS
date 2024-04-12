@@ -23,13 +23,15 @@
     "@electron-forge/maker-zip": "^7.3.1",
     "@electron-forge/plugin-fuses": "^7.3.1",
     "@mediapipe/tasks-vision": "0.10.12",
-    "electron": "^28.2.10",
+    "electron": "^28.3.0",
     "obs-websocket-js": "^5.0.4"
   },
   "dependencies": {
     "@mediapipe/tasks-text": "^0.10.12",
     "@mediapipe/tasks-vision": "0.10.12",
     "electron-log": "^5.1.2",
-    "node-osc": "^9.1.1"
+    "express": "^4.19.2",
+    "node-osc": "^9.1.1",
+    "ws": "8.16.0"
   }
 }

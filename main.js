@@ -2,7 +2,9 @@ const { app, BrowserWindow, desktopCapturer, ipcMain } = require('electron/main'
 const path = require('path')
 const log = require('electron-log');
 const fs = require('fs'); 
-const Server = require('node-osc');
+const oscServer = require('node-osc');
+const server = require("./expressServer/server");
+
 
 //macOS microphone permission
 
@@ -37,7 +39,7 @@ log.info('Log from the main process');
 //#endregion
 
 //window variables
-let mainWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow, sentimentWindow;
+let mainWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow, sentimentWindow,webRTCWindow;
 var windowSetup, source;
 var webSocketDetails = {
       "websocketIP": "",
@@ -293,6 +295,37 @@ ipcMain.on('open-sentiment-window', (event, IP, Port, PW) => {
 
 })
 //#endregion
+
+//#region Open-rtcVideo-window
+ipcMain.on('open-rtcVideo-window', (event, Port, Source, Type) => {
+  console.log("main received rtc IPC", typeof Port)
+  //Starts the expressjs server and pass the Port
+  server(Number(Port));
+  rtcWindow = new BrowserWindow({
+    width: 800,
+    height: 1000,
+    x: 100,
+    y: 100,
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      backgroundThrottling: false,
+    }
+  })
+  //load the index.html of the WebRTC express app.
+  rtcWindow.loadURL(`http://localhost:${Number(Port)}/index.html?sourceID=${Source}&type=${Type}&isHost=1`);
+
+})
+//#endregion
+
+
+
+
 
 //#region IPC APIs
 //Send websocket and projector window to renderer

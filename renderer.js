@@ -6,7 +6,8 @@ const wsConnectButton = document.getElementById("WSconnectButton");
 const refreshPrjButton = document.getElementById("refreshProjector");
 const refreshInputButton = document.getElementById("refreshInputs");
 const refreshMidiButton = document.getElementById("refreshMidi");
-//const refreshGamepadButton = document.getElementById("refreshGamepads");
+const refreshrtcVideoButton = document.getElementById("refreshVideoRTC");
+const refreshrtcAudioButton = document.getElementById("refreshAudioRTC");
 
 let moveOffScreenButton, movePrimaryScreenButton;
 
@@ -14,12 +15,12 @@ let moveOffScreenButton, movePrimaryScreenButton;
 loadScript();
 async function loadScript() {
   setWSdefaults();
-  //startWSconnection();
+  
   desktopSources = await window.electronAPI.handleGetDesktopSources();
   loadProjectorOptions();
   getInputSources();
   getMidiSources();
-  //getGamepadSources();
+  loadrtcVideoOptions();
 }
 
 //Connect to OBS Web Socket Server
@@ -29,7 +30,9 @@ wsConnectButton.addEventListener("click", startWSconnection);
 refreshPrjButton.addEventListener("click", ipcGetDesktopSources);
 refreshInputButton.addEventListener("click", getInputSources);
 refreshMidiButton.addEventListener("click", getMidiSources);
-//refreshGamepadButton.addEventListener("click", getGamepadSources);
+refreshrtcVideoButton.addEventListener("click", loadrtcVideoOptions);
+refreshrtcAudioButton.addEventListener("click", getInputSources);;
+
 
 async function setWSdefaults() {
   console.log("set OBS connection defaults");
@@ -195,6 +198,17 @@ function loadProjectorOptions() {
   }
 }
 
+//Add open windows to the drop down list.
+function loadrtcVideoOptions() {
+  for (const source of desktopSources) {
+      var x = document.getElementById("rtcWindows");
+      var option = document.createElement("option");
+      option.text = source.name;
+      option.id = source.id;
+      x.add(option);
+   }
+}
+
 //#region Create new MediaPipe windows
 var sourceInput, sourceWidth, sourceHeight;
 poseButton.addEventListener("click", newPoseWindow);
@@ -219,7 +233,7 @@ async function newPoseWindow() {
   const projectorID = e.options[e.selectedIndex].id;
   console.log(`${IP}, ${Port}, ${PW}, ${projectorID},${sourceName}`);
 
-  console.log("call main");
+  console.log("call main",IP, Port, PW, projectorID, sourceName );
   window.electronAPI.poseWindow(IP, Port, PW, projectorID, sourceName);
 }
 //#endregion
@@ -364,6 +378,53 @@ async function newSentimentWindow() {
     IP,
     Port,
     PW
+  );
+}
+//#endregion
+
+//#region webRTC Video window
+const rtcVideoButton = document.getElementById("rtcVideoButton");
+rtcVideoButton.addEventListener("click", newRTCvideoWindow);
+
+async function newRTCvideoWindow() {
+  //get server details
+  
+  const rtcVideoPort = document.getElementById("rtcVideoPort").value;
+  const e = document.getElementById("rtcWindows");
+  console.log(e.value);
+  console.log(e.options[e.selectedIndex].text);
+  const rtcWindow = e.options[e.selectedIndex].id;
+  
+  console.log(
+    `${rtcVideoPort}, ${rtcWindow}`
+  );
+  console.log("call new rtc video window on main");
+  window.electronAPI.rtcVideoWindow(
+    rtcVideoPort,
+    rtcWindow,
+    "VIDEO"
+  );
+}
+//#endregion
+
+//#region webRTC Audio window
+const rtcAudioButton = document.getElementById("rtcAudioButton");
+rtcAudioButton.addEventListener("click", newRTCaudioWindow);
+
+async function newRTCaudioWindow() {
+  //get server details
+  
+  const rtcAudioPort = document.getElementById("rtcAudioPort").value;
+  const rtcAudioSource = document.getElementById("rtcAudioSources").value;
+  
+  console.log(
+    `${rtcAudioPort}, ${rtcAudioSource}`
+  );
+  console.log("call new rtc audio window on main");
+  window.electronAPI.rtcAudioWindow(
+    rtcAudioPortPort,
+    rtcWindow,
+    "AUDIO"
   );
 }
 //#endregion

@@ -1,221 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
+<head>
 
-		<meta charset="UTF-8">
+	<meta charset="UTF-8">
 
-		<title>Media for OBS</title>
+	<title>Media for OBS</title>
 
-		<meta name="description" content="">
-		<meta name="author" content="">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-		<meta name="viewport" content="width=700, user-scalable=no" />
+	<meta name="viewport" content="width=700, user-scalable=no" />
 
-		<!-- <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre|Roboto" rel="stylesheet"> -->
-		<link href="style.css" rel="stylesheet" type="text/css" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
 
-	</head>
+</head>
 
-	<body>
-		<nav class="toc">
-			<ul>
-				<li><a href="#Intro">Media for OBS</a></li>
-				<li>
-					<a href="#srvr">Servers</a>
-					<ul>
-						<li><a href="#srvr-obs-ws">OBS WebSocket Server</a></li>
-						<li><a href="#srvr-osc">OSC Server</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#mp">MediaPipe</a>
-					<ul>
-						<li><a href="#mp-pose-detect">Pose Detection</a></li>
-						<li><a href="#mp-sentiment-analysis">Text Sentiment</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#audio">Audio</a>
-					<ul>
-						<li><a href="#audio-fft-analysis">Audio Frequency</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#input">Input</a>
-					<ul>
-						<li><a href="#input-midi-devices">Midi</a></li>
-						<li><a href="#input-gamepad-controller">Gamepad</a></li>
-					</ul>
-				</li>
-			</ul>
-			<svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-				<path stroke="#444" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round"
-					stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
-			</svg>
-		</nav>
+<body>
+	<nav class="toc">
+		<ul>
+			<li><a href="#Intro">Media for OBS</a></li>
+			<li>
+				<a href="#srvr">Servers</a>
+				<ul>
+					<li><a href="#srvr-obs-ws">OBS WebSocket Server</a></li>
+					<li><a href="#srvr-osc">OSC Server</a></li>
+					<li><a href="#srvr-webRTC-Video">webRTC Video</a></li>
+					<li><a href="#srvr-webRTC-Audio">webRTC Audio</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#mp">MediaPipe</a>
+				<ul>
+					<li><a href="#mp-pose-detect">Pose Detection</a></li>
+					<li><a href="#mp-sentiment-analysis">Text Sentiment</a></li>
+				</ul>
+			</li>
+			<li>
+			<li>
+				<a href="#mp">MediaPipe</a>
+				<ul>
+					<li><a href="#mp-pose-detect">Pose Detection</a></li>
+					<li><a href="#mp-sentiment-analysis">Text Sentiment</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#audio">Audio</a>
+				<ul>
+					<li><a href="#audio-fft-analysis">Audio Frequency</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#input">Input</a>
+				<ul>
+					<li><a href="#input-midi-devices">Midi</a></li>
+					<li><a href="#input-gamepad-controller">Gamepad</a></li>
+				</ul>
+			</li>
+		</ul>
+		<svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+			<path stroke="#444" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000"
+				stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
+		</svg>
+	</nav>
 
-		<article class="contents">
-			<section id="intro">
-				<h2>Media for OBS</h2>
+	<article class="contents">
+		<section id="intro">
+			<h2>Media for OBS</h2>
 
-			</section>
+		</section>
 
-			<section>
-				<div id="srvr">
-					<h2>Connections</h2>
-					<p></p>
-				</div>
-				<div id="srvr-obs-ws">
-					<h3>OBS WebSocket Server</h3>
-					<p><label for="IP">Enter IP address or "localhost":</label>
-						<input type="text" id="IP" name="IP" value="ip" /><br>
-						<label for="Port">Enter Port Number:</label>
-						<input type="text" id="Port" name="Port" value="port" /><br>
-						<label for="PW">Enter Password:</label>
-						<input type="password" id="PW" name="PW" value="password" /></br>
-						<input type="button" id="WSconnectButton" value="Connect to OBS" />
-					</p>
-				</div>
+		<section>
+			<div id="srvr">
+				<h2>Connections</h2>
+				<p></p>
+			</div>
+			<div id="srvr-obs-ws">
+				<h3>OBS WebSocket Server</h3>
+				<p><label for="IP">Enter IP address or "localhost":</label>
+					<input type="text" id="IP" name="IP" value="ip" /><br>
+					<label for="Port">Enter Port Number:</label>
+					<input type="text" id="Port" name="Port" value="port" /><br>
+					<label for="PW">Enter Password:</label>
+					<input type="password" id="PW" name="PW" value="password" /></br>
+					<input type="button" id="WSconnectButton" value="Connect to OBS" />
+				</p>
+			</div>
 
-				<div id="srvr-osc">
-					<h3>Open Sound Control Server</a></h3>
-					<p><label for="oscIP">Enter OSC IP address or "localhost":</label>
-						<input type="text" id="oscIP" name="oscIP" value="127.0.0.1" /><br>
-						<label for="oscInPort">Enter OSC In (receive) Port Number:</label>
-						<input type="text" id="oscInPORT" name="oscInPort" value="12345" /><br>
-						<label for="oscOutPort">Enter OSC Out (transport) Port Number:</label>
-						<input type="text" id="oscOutPORT" name="oscOutPort" value="9090" /><br>
-						<input type="button" id="oscButton" value="Create OSC Server" />
-					</p>
-			</section>
+			<div id="srvr-osc">
+				<h3>Open Sound Control Server</a></h3>
+				<p><label for="oscIP">Enter OSC IP address or "localhost":</label>
+					<input type="text" id="oscIP" name="oscIP" value="127.0.0.1" /><br>
+					<label for="oscInPort">Enter OSC In (receive) Port Number:</label>
+					<input type="text" id="oscInPORT" name="oscInPort" value="12345" /><br>
+					<label for="oscOutPort">Enter OSC Out (transport) Port Number:</label>
+					<input type="text" id="oscOutPORT" name="oscOutPort" value="9090" /><br>
+					<input type="button" id="oscButton" value="Create OSC Server" />
+				</p>
+			</div>
+			<div id="srvr-webRTC-Video">
+				<h3>WebRTC Video data</a></h3>
+				<p><label for="rtcPort">Enter a Port number:</label>
+					<input type="text" id="rtcVideoPort" name="rtcPort" value="8080" /><br>
+					<label for="rtcWindows">Choose a desktop source to capture:</label>
+					<select name="rtcWindows" id="rtcWindows">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<input type="button" id="refreshVideoRTC" value="Refresh list of Windows" />
+					<br><br>
+					<input type="button" id="rtcVideoButton" value="Start webRTC Video" />
+				</p>
+			</div>
+			<div id="srvr-webRTC-Audio">
+				<h3>WebRTC Audio data</a></h3>
+				<p><label for="rtcAudioPort">Enter a Port number:</label>
+					<input type="text" id="rtcAudioPort" name="rtcAudioPort" value="8082" /><br>
+					<label for="rtcAudio">Choose an Audio source capture:</label>
+					<select name="rtcAudio" id="rtcAudioSources">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<input type="button" id="refreshAudioRTC" value="Refresh list of Audio sources" />
+					<br><br>
+					<input type="button" id="rtcAudioButton" value="Start webRTC Audio" />
+				</p>
+			</div>
+		</section>
 
-			<section>
-				<div id="mp">
-					<h2>MediaPipe</h2>
-					<p></p>
-				</div>
-				<div id="mp-pose-detect">
-					<h3>Pose Detection</h3>
-					<p>
-						<label for="openProjectors">Choose a desktop source projector to capture:</label>
-						<select name="openProjectors" id="projectors">
-							<option value="">--Please choose a source--</option>
-						</select>
-						<input type="button" id="refreshProjector" value="Refresh list of Projector Windows" />
-						<br><br>
-						<input type="button" id="PoseButton" value="Start MediaPipe" />
-					</p>
-				</div>
-				<div id="mp-sentiment-analysis">
-					<h3>Sentiment Analysis</h3>
-					<p>The MediaPipe Text Classifier will rate text sentiment as positive or negative.<br>
-						Use the OBS Plugins <a href="https://obsproject.com/forum/resources/localvocal-local-live-captions-translation-on-the-go.1769/">LocalVocal</a> and 
-						<a href="https://obsproject.com/forum/resources/advanced-scene-switcher.395/">Advanced Scene Switcher</a> to transcribe voice to text.  
-						<br><br>
-						<input type="button" id="SentimentButton" value="Start MediaPipe Text Classifier" />
-					</p>
-				</div>
-			</section>
-			<section>
-				<div id="audio">
-					<h2>Audio inputs</h2>
-					<p></p>
-				</div>
-				<div id="audio-fft-analysis">
-					<h3>Frequency Analysis</h3>
-					<p><label for="audioIn">Choose an audio input source to capture:</label>
-						<select name="audioIn" id="audioIn">
-							<option value="">--Please choose a source--</option>
-						</select>
-						<br>
-						<input type="button" id="refreshInputs" value="Refresh list of Audio Inputs" />
-						<br><br>
-
-						<input type="button" id="audioButton" value="Start Audio" />
-					</p>
-				</div>
-			</section>
-			<section>
-				<div id="input">
-					<h2>input</h2>
-					<p></p>
-				</div>
-				<div id="input-midi-devices">
-					<h3>Midi</h3>
-					<p>
-						<label for="midiIn">Choose a midi input source to capture:</label>
-						<select name="midiIn" id="midiIn">
-							<option value="">--Please choose a source--</option>
-						</select>
-						<br>
-						<label for="midiOut">Choose a midi output:</label>
-						<select name="midiOut" id="midiOut">
-							<option value="">--Please choose a source--</option>
-						</select>
-						<br>
-						<input type="button" id="refreshMidi" value="Refresh lists of Midi" />
-						<br><br>
-
-						<input type="button" id="midiButton" value="Start Midi" />
-
-					</p>
-				</div>
-				<div id="input-gamepad-controller">
-					<h3>Gamepad</h3>
-					<p><label for="gamepad">Choose an audio input source to capture:</label>
-						<select name="gamepad" id="gamepad">
-							<option value="">--Please choose a source--</option>
-						</select>
-						<br>
-					<p id="controller"></p>
-					<!-- <input type="button" id="refreshGamepads" value="Refresh list of Gamepads" /> -->
+		<section>
+			<div id="mp">
+				<h2>MediaPipe</h2>
+				<p></p>
+			</div>
+			<div id="mp-pose-detect">
+				<h3>Pose Detection</h3>
+				<p>
+					<label for="openProjectors">Choose a desktop source projector to capture:</label>
+					<select name="openProjectors" id="projectors">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<input type="button" id="refreshProjector" value="Refresh list of Projector Windows" />
+					<br><br>
+					<input type="button" id="PoseButton" value="Start MediaPipe" />
+				</p>
+			</div>
+			<div id="mp-sentiment-analysis">
+				<h3>Sentiment Analysis</h3>
+				<p>The MediaPipe Text Classifier will rate text sentiment as positive or negative.<br>
+					Use the OBS Plugins <a
+						href="https://obsproject.com/forum/resources/localvocal-local-live-captions-translation-on-the-go.1769/">LocalVocal</a>
+					and
+					<a href="https://obsproject.com/forum/resources/advanced-scene-switcher.395/">Advanced Scene
+						Switcher</a> to transcribe voice to text.
+					<br><br>
+					<input type="button" id="SentimentButton" value="Start MediaPipe Text Classifier" />
+				</p>
+			</div>
+		</section>
+		<section>
+			<div id="audio">
+				<h2>Audio inputs</h2>
+				<p></p>
+			</div>
+			<div id="audio-fft-analysis">
+				<h3>Frequency Analysis</h3>
+				<p><label for="audioIn">Choose an audio input source to capture:</label>
+					<select name="audioIn" id="audioIn">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<br>
+					<input type="button" id="refreshInputs" value="Refresh list of Audio Inputs" />
 					<br><br>
 
-					<input type="button" id="gamepadButton" value="Start Gamepad" />
-					</p>
-				</div>
-			</section>
-		</article>
-		
-		<div class="credits">
-			<a href="https://github.com/UUoocl/MediaPipe_for_OBS">Source on GitHub</a>
-		</div>
+					<input type="button" id="audioButton" value="Start Audio" />
+				</p>
+			</div>
+		</section>
+		<section>
+			<div id="input">
+				<h2>input</h2>
+				<p></p>
+			</div>
+			<div id="input-midi-devices">
+				<h3>Midi</h3>
+				<p>
+					<label for="midiIn">Choose a midi input source to capture:</label>
+					<select name="midiIn" id="midiIn">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<br>
+					<label for="midiOut">Choose a midi output:</label>
+					<select name="midiOut" id="midiOut">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<br>
+					<input type="button" id="refreshMidi" value="Refresh lists of Midi" />
+					<br><br>
 
-		<style type="text/css" media="screen">
+					<input type="button" id="midiButton" value="Start Midi" />
+
+				</p>
+			</div>
+			<div id="input-gamepad-controller">
+				<h3>Gamepad</h3>
+				<p><label for="gamepad">Choose an audio input source to capture:</label>
+					<select name="gamepad" id="gamepad">
+						<option value="">--Please choose a source--</option>
+					</select>
+					<br>
+				<p id="controller"></p>
+				<!-- <input type="button" id="refreshGamepads" value="Refresh list of Gamepads" /> -->
+				<br><br>
+
+				<input type="button" id="gamepadButton" value="Start Gamepad" />
+				</p>
+			</div>
+		</section>
+	</article>
+
+	<div class="credits">
+		<a href="https://github.com/UUoocl/MediaPipe_for_OBS">Source on GitHub</a>
+	</div>
+
+	<style type="text/css" media="screen">
+		.credits {
+			position: fixed;
+			left: 3em;
+			bottom: 4em;
+			font-size: 1em;
+			z-index: 20;
+			color: #444;
+			vertical-align: middle;
+		}
+
+		.credits *+* {
+			margin-top: 15px;
+		}
+
+		.credits a {
+			display: block;
+			padding: 8px 10px;
+			color: #777;
+			border: 2px solid #bbb;
+			background: #fff;
+			text-decoration: none;
+		}
+
+		.credits a:hover {
+			border-color: #555;
+			color: #222;
+		}
+
+		@media screen and (max-height: 700px) {
 			.credits {
-				position: fixed;
-				left: 3em;
-				bottom: 4em;
-				font-size: 1em;
-				z-index: 20;
-				color: #444;
-				vertical-align: middle;
+				display: none;
 			}
+		}
+	</style>
+</body>
 
-			.credits * + * {
-				margin-top: 15px;
-			}
-
-			.credits a {
-				display: block;
-				padding: 8px 10px;
-				color: #777;
-				border: 2px solid #bbb;
-				background: #fff;
-				text-decoration: none;
-			}
-
-			.credits a:hover {
-				border-color: #555;
-				color: #222;
-			}
-
-			@media screen and (max-height: 700px) {
-				.credits {
-					display: none;
-				}
-			}
-		</style>
-	</body>
 </html>

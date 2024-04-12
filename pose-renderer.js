@@ -8,10 +8,10 @@ var setupDetails,
   windowID,
   sourceName,
   MPvalues;
-var frameRate, FPSElement, canvasElement, IP, PORT, PW;
+var frameRate, FPSElement, canvasElement, IP, PORT, PW, sourceName;
 
 async function updateFPS() {
-  console.log("FPS changed");
+  console.log("FPS changed", windowID);
   frameRate = document.getElementById("FPS").value;
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
@@ -51,22 +51,18 @@ document.getElementById("FPS").addEventListener("change", updateFPS);
 
   //get obs ws socket details
   setupDetails = await window.electronAPI.handleGetOBSWSdetails();
-  console.log("IPC connect details")
+  console.log("IPC connect details", setupDetails)
   IP = setupDetails.websocketIP
   PORT = setupDetails.websocketPort
   PW =  setupDetails.websocketPassword
-  
-  // await connectOBS(wss.ip,
-  //   wss.port,
-  //   wss.pw,
-  //   )
+  sourceName =  setupDetails.sourceName
   
   await connectOBS(IP,PORT,PW)
 
   //get source width and Height
   console.log("get ");
   sourceInput = await obs.call("GetInputSettings", {
-    inputName: setupDetails.sourceName,
+    inputName: sourceName,
   });
   console.log(sourceInput.inputSettings.resolution);
   console.log(sourceInput.inputSettings.resolution.includes("x"));
