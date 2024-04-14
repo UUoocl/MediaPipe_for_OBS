@@ -1,6 +1,5 @@
 html,
-body,
-video {
+body {
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -8,6 +7,15 @@ video {
     box-sizing: border-box;
     overflow: hidden;
 }
+
+/* video {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+} */
 
 body {
     background-color: #455;
@@ -163,4 +171,15 @@ body {
 
 .hide {
     display: none !important;
+}
+
+.client {
+    position: fixed;
+    left: 0em;
+    bottom: 0em;
+    font-size: 2em;
+    z-index: 20;
+    color: #030202;
+    background-color: azure;
+    vertical-align: middle;
 }

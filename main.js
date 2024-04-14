@@ -39,7 +39,7 @@ log.info('Log from the main process');
 //#endregion
 
 //window variables
-let mainWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow, sentimentWindow,webRTCWindow;
+let mainWindow, poseWindow, audioWindow, midiWindow, gamepadWindow, oscWindow, sentimentWindow,rtcWindow;
 var windowSetup, source;
 var webSocketDetails = {
       "websocketIP": "",
@@ -296,11 +296,17 @@ ipcMain.on('open-sentiment-window', (event, IP, Port, PW) => {
 })
 //#endregion
 
-//#region Open-rtcVideo-window
-ipcMain.on('open-rtcVideo-window', (event, Port, Source, Type) => {
-  console.log("main received rtc IPC", typeof Port)
+//#region Open-ExpressVideo-window
+var expressPort
+var serverOn = false;
+ipcMain.on('open-rtc-window', (event, rtcPort, rtcVideoId, rtcAudioId, rtcType) => {
+  console.log("main received rtc IPC", typeof rtcPort)
   //Starts the expressjs server and pass the Port
-  server(Number(Port));
+  if(rtcPort != expressPort ){
+  server(Number(rtcPort));
+    expressPort=rtcPort
+  }
+
   rtcWindow = new BrowserWindow({
     width: 800,
     height: 1000,
@@ -318,13 +324,10 @@ ipcMain.on('open-rtcVideo-window', (event, Port, Source, Type) => {
     }
   })
   //load the index.html of the WebRTC express app.
-  rtcWindow.loadURL(`http://localhost:${Number(Port)}/index.html?sourceID=${Source}&type=${Type}&isHost=1`);
-
+  console.log(rtcType)
+  rtcWindow.loadURL(`http://localhost:${Number(rtcPort)}/indexp5.html?videoID=${rtcVideoId}&audioID=${rtcAudioId}&type=${rtcType}&isHost=1`);
 })
 //#endregion
-
-
-
 
 
 //#region IPC APIs

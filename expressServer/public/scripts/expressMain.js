@@ -1,5 +1,6 @@
 const webRTCConfig = { "iceServers": [] };
 const webRTCConnection = {};
+var scripts =[]
 
 /**
  * The websocket connection to the server
@@ -23,7 +24,7 @@ function sendToWebSocket({id, action, data}) {
     webSocket.send(JSON.stringify(json));
 }
 
-function initialize() {
+async function initialize() {
     
     const debug = false;
     if (debug) {
@@ -39,11 +40,11 @@ function initialize() {
     searchParams.get("isHost")
     if(searchParams.get("isHost")){
         connectionDiv.classList.add("hide");
-        connect(true)
+        await connect(true)
         
     }else{
         connectionDiv.classList.add("hide");
-        connect(false)
+        await connect(false)
     };
 }
 
@@ -51,11 +52,12 @@ function initialize() {
  * Connect to the server
  * @param {bool} asHost 
  */
-function connect(asHost) {
+async function connect(asHost) {
     webSocket = new WebSocket(`ws://127.0.0.1:${parseInt(location.port) + 1}`);
 
     // Create the peer connection and listen for the connected event
     connection = new WebConnection();
+    console.log("connection", connection)
     connection.addEventListener("connected", (e) => {
         
     });
@@ -108,6 +110,36 @@ function connect(asHost) {
                 break;
         }
     };
+
+//load scripts
+const searchParams = new URLSearchParams(window.location.search);
+const sketch = searchParams.get("p5")
+console.log("sketch", sketch)
+scripts = [
+    //{"source":"lib/p5.js","type":"","async":false},
+    //{"source":"lib/p5.sound.js","type":"","async":false},
+    {"source":`sketch/${sketch}.js`,"type":"","async":false}]
+    //{"source":"sketch/videoTest.js","type":"","async":false}]
+    if(sketch){
+    //await new Promise(resolve => {setTimeout(resolve,1000)});
+    loadScripts()
+    }
+}
+
+async function loadScripts() { 
+    scripts.forEach(script => {
+        const scriptElem = document.createElement('script');
+        scriptElem.src = script.source; 
+        scriptElem.async = script.async;
+        if(script.type){scriptElem.type = script.type;}
+        scriptElem.onload = () => {
+        console.log(`${script.source} Script loaded successfuly`);
+        };
+        scriptElem.onerror = () => {
+        console.log(`${script.source} Error occurred while loading script`);
+        };
+        document.body.appendChild(scriptElem);
+    });
 }
 
 window.onerror = (e) => {
