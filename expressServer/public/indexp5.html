@@ -5,11 +5,6 @@
     <meta charset="utf-8">
     <title>WebRTC Audio Video Stream P5</title>
     <link rel="stylesheet" media="screen" href="css/main.css">
-    <script src="scripts/webConnection.js"></script>
-    <script src="scripts/expressMain.js"></script>
-    <script src="lib/p5.js"></script>
-    <script src="lib/p5.sound.js"></script>
-    <!-- <script src="sketch/videoTest.js" async></script> -->
 </head>
 
 <body>
@@ -19,16 +14,19 @@
         <button id="hostButton">Host Session</button>
         <button id="joinButton">Join</button>
     </div>
+    <video id="hostVideo" class="hide"></video>
+    <audio id="hostAudio" class="hide"></audio>
     <video id="video" class="hide"></video>
     <audio id="audio" class="hide"></audio>
-    <div id="drawing" class="hide">
-        <div id="canvasContainer">
-            <canvas id="canvas"></canvas>
-        </div>
-    </div>
+    
     <div >
         <h3 id="clientLink" class="hide">http://localhost:${Number(rtcPort)}/index.html?isHost=0</h3>
     </div>
+    <script src="scripts/webConnection.js"></script>
+    <script src="scripts/expressMain.js"></script>
+    <script src="lib/p5.js"></script>
+    <script src="lib/p5.sound.js"></script>
+    <!-- <script src="sketch/videoTest.js" async></script> -->
 </body>
 
 </html>
