@@ -2,16 +2,11 @@
 <html lang="en">
 
 <head>
-
 	<meta charset="UTF-8">
-
 	<title>Media for OBS</title>
-
 	<meta name="description" content="">
 	<meta name="author" content="">
-
 	<meta name="viewport" content="width=700, user-scalable=no" />
-
 	<link href="style.css" rel="stylesheet" type="text/css" />
 
 </head>
@@ -25,8 +20,7 @@
 				<ul>
 					<li><a href="#srvr-obs-ws">OBS WebSocket Server</a></li>
 					<li><a href="#srvr-osc">OSC Server</a></li>
-					<li><a href="#srvr-webRTC-Video">webRTC Video</a></li>
-					<li><a href="#srvr-webRTC-Audio">webRTC Audio</a></li>
+					<li><a href="#srvr-webRTC">webRTC Server</a></li>
 				</ul>
 			</li>
 			<li>
@@ -37,13 +31,6 @@
 				</ul>
 			</li>
 			<li>
-			<li>
-				<a href="#mp">MediaPipe</a>
-				<ul>
-					<li><a href="#mp-pose-detect">Pose Detection</a></li>
-					<li><a href="#mp-sentiment-analysis">Text Sentiment</a></li>
-				</ul>
-			</li>
 			<li>
 				<a href="#audio">Audio</a>
 				<ul>
@@ -57,6 +44,13 @@
 					<li><a href="#input-gamepad-controller">Gamepad</a></li>
 				</ul>
 			</li>
+			<li>
+				<a href="#camera">Camera</a>
+				<ul>
+					<li><a href="#camera-ptz">Pan, Tilt, Zoom</a></li>
+				</ul>
+			</li>
+
 		</ul>
 		<svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
 			<path stroke="#444" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000"
@@ -91,41 +85,34 @@
 				<h3>Open Sound Control Server</a></h3>
 				<p><label for="oscIP">Enter OSC IP address or "localhost":</label>
 					<input type="text" id="oscIP" name="oscIP" value="127.0.0.1" /><br>
-					<label for="oscInPort">Enter OSC In (receive) Port Number:</label>
+					<label for="oscInPORT">Enter OSC In (receive) Port Number:</label>
 					<input type="text" id="oscInPORT" name="oscInPort" value="12345" /><br>
-					<label for="oscOutPort">Enter OSC Out (transport) Port Number:</label>
+					<label for="oscOutPORT">Enter OSC Out (transport) Port Number:</label>
 					<input type="text" id="oscOutPORT" name="oscOutPort" value="9090" /><br>
 					<input type="button" id="oscButton" value="Create OSC Server" />
 				</p>
 			</div>
-			<div id="srvr-webRTC-Video">
-				<h3>WebRTC Video data</a></h3>
+
+			<div id="srvr-webRTC">
+				<h3>WebRTC Audio and Video data</a></h3>
 				<p><label for="rtcPort">Enter a Port number:</label>
-					<input type="text" id="rtcVideoPort" name="rtcPort" value="8080" /><br>
+					<input type="text" id="rtcPort" name="rtcPort" value="8080" /><br>
 					<label for="rtcWindows">Choose a desktop source to capture:</label>
 					<select name="rtcWindows" id="rtcWindows">
-						<option value="">--Please choose a source--</option>
+						<option id="" value="">--Please choose a source--</option>
 					</select>
 					<input type="button" id="refreshVideoRTC" value="Refresh list of Windows" />
 					<br><br>
-					<input type="button" id="rtcVideoButton" value="Start webRTC Video" />
-				</p>
-			</div>
-			<div id="srvr-webRTC-Audio">
-				<h3>WebRTC Audio data</a></h3>
-				<p><label for="rtcAudioPort">Enter a Port number:</label>
-					<input type="text" id="rtcAudioPort" name="rtcAudioPort" value="8082" /><br>
-					<label for="rtcAudio">Choose an Audio source capture:</label>
-					<select name="rtcAudio" id="rtcAudioSources">
-						<option value="">--Please choose a source--</option>
+					<label for="rtcAudioSources">Choose an audio source to capture:</label>
+					<select name="rtcAudioSources" id="rtcAudioSources">
+						<option id="" value="">--Please choose a source--</option>
 					</select>
 					<input type="button" id="refreshAudioRTC" value="Refresh list of Audio sources" />
 					<br><br>
-					<input type="button" id="rtcAudioButton" value="Start webRTC Audio" />
+					<input type="button" id="rtcButton" value="Start webRTC Video" />
 				</p>
 			</div>
-		</section>
-
+			</section>
 		<section>
 			<div id="mp">
 				<h2>MediaPipe</h2>
@@ -134,7 +121,7 @@
 			<div id="mp-pose-detect">
 				<h3>Pose Detection</h3>
 				<p>
-					<label for="openProjectors">Choose a desktop source projector to capture:</label>
+					<label for="projectors">Choose a desktop source projector to capture:</label>
 					<select name="openProjectors" id="projectors">
 						<option value="">--Please choose a source--</option>
 					</select>
@@ -212,6 +199,19 @@
 				<br><br>
 
 				<input type="button" id="gamepadButton" value="Start Gamepad" />
+				</p>
+			</div>
+		</section>
+		<section>
+			<div id="camera">
+				<h2>Camera data</h2>
+				<p></p>
+			</div>
+			<div id="camera-ptz">
+				<h3>Pan, Tilt, Zoom data</h3>
+				<p>Current camera position data (Mac Only). Use Advanced Scene Switcher for Windows</p>
+
+				<input type="button" id="ptzButton" value="Start PTZ data" />
 				</p>
 			</div>
 		</section>

@@ -4,13 +4,14 @@ const log = require('electron-log');
 const fs = require('fs'); 
 const oscServer = require('node-osc');
 const server = require("./expressServer/server");
+const { electron } = require('process');
+const { shell } = require('electron')
 
 
 //macOS microphone permission
 
 // const { systemPreferences } = require('electron')
 // const microphone = systemPreferences.askForMediaAccess('microphone');
-
 
 //#region log file
 //Create log file of Pose landmarks
@@ -259,7 +260,7 @@ ipcMain.on('open-osc-window', (event, IP, Port, PW, oscIP, oscInPORT,oscOutPORT)
   };
   //console.log(windowSetup)
   oscWindow.loadFile('osc.html');
-  oscWindow.webContents.openDevTools()
+  //oscWindow.webContents.openDevTools()
 })
 //#endregion
 
@@ -291,14 +292,14 @@ ipcMain.on('open-sentiment-window', (event, IP, Port, PW) => {
   };
   //console.log(windowSetup)
   sentimentWindow.loadFile('sentiment.html');
-  sentimentWindow.webContents.openDevTools()
+  //sentimentWindow.webContents.openDevTools()
 
 })
 //#endregion
 
-//#region Open-ExpressVideo-window
+//#region Open-webRTC-window
 var expressPort
-var serverOn = false;
+
 ipcMain.on('open-rtc-window', (event, rtcPort, rtcVideoId, rtcAudioId, rtcType) => {
   console.log("main received rtc IPC", typeof rtcPort)
   //Starts the expressjs server and pass the Port
@@ -325,10 +326,42 @@ ipcMain.on('open-rtc-window', (event, rtcPort, rtcVideoId, rtcAudioId, rtcType) 
   })
   //load the index.html of the WebRTC express app.
   console.log(rtcType)
-  rtcWindow.loadURL(`http://localhost:${Number(rtcPort)}/indexp5.html?videoID=${rtcVideoId}&audioID=${rtcAudioId}&type=${rtcType}&isHost=1`);
+  //rtcWindow.loadURL(`http://localhost:${Number(rtcPort)}/indexp5.html?videoID=${rtcVideoId}&audioID=${rtcAudioId}&type=${rtcType}&isHost=1`);
 })
 //#endregion
 
+
+//#region Open-ptz-windows
+ipcMain.on('open-ptz-window', (event, IP, Port, PW) => {
+  console.log("main received sentiment IPC")
+  ptzWindow = new BrowserWindow({
+    width: 400,
+    height: 400,
+    x: 100,
+    y: 100,
+    frame: true,
+    resizable: true,
+    //roundedCorners: false,
+    movable: true,
+    titleBarOverlay: false,
+    transparent: false,
+    titleBarStyle: 'default',
+    webPreferences: {
+      backgroundThrottling: false,
+      preload: path.join(__dirname, 'ptz-preload.js')
+    }
+  })
+
+  windowSetup = {
+    websocketIP: IP,
+    websocketPort: Port,
+    websocketPassword: PW
+  };
+  //console.log(windowSetup)
+  ptzWindow.loadFile('ptz.html');
+  ptzWindow.webContents.openDevTools()
+
+})
 
 //#region IPC APIs
 //Send websocket and projector window to renderer
@@ -397,4 +430,17 @@ ipcMain.on('wsConnect', (event) => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
+})
+
+//Commandline process function 
+//get the PTZ camera position and send the data to a renderer
+ipcMain.handle('run-command-line', async (event,cmd) => {
+  exec(cmd,(err, stdout, stderr) => {
+    console.log(stdout)
+    if(err){
+      console.log(err);
+      return;
+    }
+    return stdout
+  });
 })
