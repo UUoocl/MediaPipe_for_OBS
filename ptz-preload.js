@@ -2,13 +2,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
     handleGetOBSWSdetails: () => ipcRenderer.invoke('get-obsWSdetails'),
-    handleRunCommand: (cmd) => ipcRenderer.invoke('run-command-line',cmd),
+    handleRunPTZcommand: (cmd) => ipcRenderer.invoke('run-ptz-command-line',cmd)
 })
-
 
 var scripts = [
 {"source":"./obs-ws.js","type":"","async":false},
-{"source":"./obsConnect.js","type":"","async":false}
+{"source":"./obsConnect.js","type":"","async":false},
+{"source":"./ptz-renderer.js","type":"","async":false},
               ]
 //Insert javascript into pose.html
 window.addEventListener('DOMContentLoaded', async () => { 

@@ -80,7 +80,7 @@ function getInputSources() {
         rtcEl.add(rtcOption);
       }
     });
-    y.selectedIndex=0;
+    rtcEl.selectedIndex=0;
   });
 }
 
