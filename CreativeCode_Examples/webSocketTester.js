@@ -28,5 +28,8 @@ window.addEventListener("pose-landmarks", function (event) {
     console.log("osc-message received: ",event)
     document.getElementById("osc-message").innerText=JSON.stringify(event.detail.webSocketMessage)
   });
-
-  document.getElementById("gamepad-message").innerText="hello"
+  
+  window.addEventListener("ptz-position-message", function (event) {
+    console.log("ptz-position-message received: ",event)
+    document.getElementById("ptz-position-message").innerText=JSON.stringify(event.detail.ptzMessage)
+    });
