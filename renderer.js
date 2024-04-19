@@ -50,7 +50,7 @@ function getInputSources() {
     document.getElementById("audioIn").innerHTML = null;
     document.getElementById("rtcAudioSources").innerHTML = null;
   }
-  console.log("audio input refresh")
+  console.log("audio input refresh");
   let x = document.getElementById("audioIn");
   let rtcEl = document.getElementById("rtcAudioSources");
   var option = document.createElement("option");
@@ -60,9 +60,9 @@ function getInputSources() {
   option.id = "";
   x.add(option);
   rtcEl.add(option);
-  
-  console.log("list of Audio Input Sources")
-  console.log(navigator.mediaDevices.enumerateDevices())
+
+  console.log("list of Audio Input Sources");
+  console.log(navigator.mediaDevices.enumerateDevices());
   navigator.mediaDevices.enumerateDevices().then((devices) => {
     devices.forEach((device) => {
       if (device.kind == "audioinput") {
@@ -80,7 +80,7 @@ function getInputSources() {
         rtcEl.add(rtcOption);
       }
     });
-    rtcEl.selectedIndex=0;
+    rtcEl.selectedIndex = 0;
   });
 }
 
@@ -179,7 +179,7 @@ async function ipcGetDesktopSources() {
   desktopSources = await window.electronAPI.handleGetDesktopSources();
   //console.log("Test returned:", desktopSources)
   loadProjectorOptions();
-  loadrtcVideoOptions()
+  loadrtcVideoOptions();
 }
 
 async function startWSconnection() {
@@ -194,6 +194,20 @@ async function startWSconnection() {
   console.log(connectionResult.socket);
   if (connectionResult.socket) {
     document.getElementById("WSconnectButton").style.background = "#00ff00";
+    var wssDetails = {
+      IP: IP,
+      PORT: Port,
+      PW: PW,
+    };
+    //send websocket server connection details to OBS browser source
+    await obs.call("CallVendorRequest", {
+      vendorName: "obs-browser",
+      requestType: "emit_event",
+      requestData: {
+        event_name: "ws-details",
+        event_data: { wssDetails },
+      },
+    });
   } else {
     document.getElementById("WSconnectButton").style.background = "#ff0000";
   }
@@ -398,10 +412,10 @@ const rtcVideoButton = document.getElementById("rtcButton");
 rtcVideoButton.addEventListener("click", newRTCWindow);
 
 async function newRTCWindow() {
-   //get server details
-   const IP = document.getElementById("IP").value;
-   const Port = document.getElementById("Port").value;
-   const PW = document.getElementById("PW").value;
+  //get server details
+  const IP = document.getElementById("IP").value;
+  const Port = document.getElementById("Port").value;
+  const PW = document.getElementById("PW").value;
 
   let rtcType = "";
   //get server details
@@ -422,7 +436,10 @@ async function newRTCWindow() {
   console.log(`${rtcPort}, ${rtcVideoId}`, rtcType);
   console.log("call new rtc window on main");
   if (rtcType) {
-    window.electronAPI.rtcWindow(IP, Port, PW,
+    window.electronAPI.rtcWindow(
+      IP,
+      Port,
+      PW,
       rtcPort,
       rtcVideoId,
       rtcAudioId,
@@ -440,6 +457,6 @@ async function newPTZWindow() {
   const IP = document.getElementById("IP").value;
   const Port = document.getElementById("Port").value;
   const PW = document.getElementById("PW").value;
-    window.electronAPI.ptzWindow(IP, Port, PW);
-  }
+  window.electronAPI.ptzWindow(IP, Port, PW);
+}
 //#endregion
