@@ -1,0 +1,137 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: #7373731b;
+}
+
+body {
+  padding: 1em 2em 2em 17em;
+  font-size: 16px;
+  line-height: 1.6;
+  font-family: "Roboto", sans-serif;
+}
+
+.toc {
+  position: fixed;
+  left: 3em;
+  top: 5em;
+  padding: 1em;
+  width: 16em;
+  line-height: 2;
+}
+.toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.toc ul ul {
+  padding-left: 2em;
+}
+.toc li a {
+  display: inline-block;
+  color: #232323;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.toc li a:hover {
+  display: inline-block;
+  background-color: #a1a1a1;
+  color: #232323;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.toc li.visible > a {
+  color: #111;
+  transform: translate(5px);
+}
+
+.toc-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.toc-marker path {
+  transition: all 0.3s ease;
+}
+
+.contents {
+  padding: 1em;
+  max-width: 800px;
+  font-size: 1.2em;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+
+  font-family: "Frank Ruhl Libre", sans-serif;
+  
+}
+
+.contents section {
+  position: relative;
+  width: 100%;
+  margin: 40px auto;
+  padding: 40px;
+  background: #fff;
+  -webkit-box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.contents img {
+  max-width: 100%;
+}
+
+.contents input {
+  max-width: 100%;
+  padding: 10px;
+  font-size: large;
+
+}
+
+.content.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.contents .code-block {
+  white-space: pre;
+  overflow: auto;
+  max-width: 100%;
+}
+.contents .code-block code {
+  display: block;
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+.contents .code-inline {
+  background-color: #f9f9f9;
+  padding: 4px;
+}
+
+
+.contents h2 h3 {
+  padding-top: 1em;
+  background-color: #f9f9f9;
+
+}
+.contents h2 {
+  margin-top: 1.2em;
+  
+}
+
+@media screen and (max-width: 1200px) {
+  body {
+    font-size: 14px;
+  }
+}

@@ -8,7 +8,7 @@ const path = require("path");
 const log = require("electron-log");
 const fs = require("fs");
 const oscServer = require("node-osc");
-const server = require("./expressServer/server");
+
 const { electron } = require("process");
 const { shell } = require("electron");
 //const exec = require("child_process").exec;
@@ -100,7 +100,7 @@ async function createWindow() {
   mainWindow.loadFile("index.html");
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 //#endregion
 
@@ -329,20 +329,13 @@ ipcMain.on("open-sentiment-window", (event, IP, Port, PW) => {
 //#endregion
 
 //#region Open-webRTC-window
-var expressPort;
-
 ipcMain.on("open-rtc-window",
   (event, IP, Port, PW, rtcPort, rtcVideoId, rtcAudioId, rtcType) => {
     console.log("main received rtc IPC");
-    //Starts the expressjs server and pass the Port
-    // if (rtcPort != expressPort) {
-    //   server(Number(rtcPort));
-    //   expressPort = rtcPort;
-    // }
 
     rtcWindow = new BrowserWindow({
-      width: 800,
-      height: 1000,
+      width: 400,
+      height: 200,
       x: 100,
       y: 100,
       frame: true,
@@ -366,7 +359,7 @@ ipcMain.on("open-rtc-window",
       rtcAudioId: rtcAudioId,
       rtcType: rtcType
     };
-    //load the index.html of the WebRTC express app.
+    
     //console.log(rtcType);
     rtcWindow.loadFile("rtc.html");
   }
@@ -401,7 +394,7 @@ ipcMain.on("open-ptz-window", (event, IP, Port, PW) => {
   };
   //console.log(windowSetup)
   ptzWindow.loadFile("ptz.html");
-  ptzWindow.webContents.openDevTools();
+  //ptzWindow.webContents.openDevTools();
 });
 
 //#region IPC APIs
@@ -455,7 +448,7 @@ ipcMain.handle("get-obs-connection", async (event) => {
   console.log("set OBS connection defaults");
   const userpath = app.getPath("userData");
   console.log(userpath);
-  //console.log(fs.exists(`${userpath}/webSocket_server_setting.txy`))
+  //console.log(fs.exists(`${userpath}/webSocket_server_setting.txt`))
   if (fs.existsSync(`${userpath}/webSocket_server_setting.txt`)) {
     let dt = fs.readFileSync(`${userpath}/webSocket_server_setting.txt`);
     let data = JSON.parse(dt);

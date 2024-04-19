@@ -42,7 +42,7 @@ async function handleGetPTZ() {
     delta = now - then;
     if (delta > interval) {
       pt = await window.electronAPI.handleRunPTZcommand(
-        "./uvc-util -I 0 -o pan-tilt-abs"
+        "/Applications/Utilities/uvc-util -I 0 -o pan-tilt-abs"
       );
       pt = JSON.parse(pt);
       if (Object.hasOwn(pt, "pan")) {
@@ -54,7 +54,7 @@ async function handleGetPTZ() {
       }
 
       z = await window.electronAPI.handleRunPTZcommand(
-        "./uvc-util -I 0 -g zoom-abs"
+        "/Applications/Utilities/uvc-util -I 0 -g zoom-abs"
       );
       z = JSON.parse(z);
       document.getElementById(
