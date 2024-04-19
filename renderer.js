@@ -398,6 +398,11 @@ const rtcVideoButton = document.getElementById("rtcButton");
 rtcVideoButton.addEventListener("click", newRTCWindow);
 
 async function newRTCWindow() {
+   //get server details
+   const IP = document.getElementById("IP").value;
+   const Port = document.getElementById("Port").value;
+   const PW = document.getElementById("PW").value;
+
   let rtcType = "";
   //get server details
   const rtcPort = document.getElementById("rtcPort").value;
@@ -417,7 +422,7 @@ async function newRTCWindow() {
   console.log(`${rtcPort}, ${rtcVideoId}`, rtcType);
   console.log("call new rtc window on main");
   if (rtcType) {
-    window.electronAPI.rtcWindow(
+    window.electronAPI.rtcWindow(IP, Port, PW,
       rtcPort,
       rtcVideoId,
       rtcAudioId,

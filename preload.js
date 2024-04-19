@@ -28,7 +28,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   gamepadWindow: (IP, Port, PW, gamepadID, gamepadName) => ipcRenderer.send('open-gamepad-window',IP, Port, PW, gamepadID, gamepadName),
   oscWindow: (IP, Port, PW, oscIP, oscInPORT,oscOutPORT) => ipcRenderer.send('open-osc-window',IP, Port, PW, oscIP, oscInPORT,oscOutPORT),
   sentimentWindow: (IP, Port, PW) => ipcRenderer.send('open-sentiment-window',IP, Port, PW),
-  rtcWindow: (rtcPort, rtcVideoId, rtcAudioId, rtcType) => ipcRenderer.send('open-rtc-window',rtcPort, rtcVideoId, rtcAudioId, rtcType),
+  rtcWindow: (IP, Port, PW, rtcPort, rtcVideoId, rtcAudioId, rtcType) => ipcRenderer.send('open-rtc-window',IP, Port, PW, rtcPort, rtcVideoId, rtcAudioId, rtcType),
   ptzWindow: (IP, Port, PW) => ipcRenderer.send('open-ptz-window',IP, Port, PW),
 
   handleGetDesktopSources: () => ipcRenderer.invoke('get-desktop-sources'),

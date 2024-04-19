@@ -2,7 +2,7 @@
 
 // SETTINGS/ VARIABLES START
 
-var EPHEMERAL = true;
+var EPHEMERAL = false //true;
 var EPHEMERAL_ALPHA = 5; // 0-255. lower = longer lasting persistence
 var FPS = 20;
 var SCENE_SCALE = 1;
@@ -97,7 +97,7 @@ function getJointPosition(jointnr)
     let cur_x = cur_data[jointnr].x
     let cur_y = cur_data[jointnr + 1].y
     no_detection = false
-    //console.log(cur_x, cur_y)
+    //  console.log(cur_x, cur_y)
     return [cur_x, cur_y]
   } else {
     no_detection = true
@@ -276,7 +276,7 @@ function getJointPosition(jointnr)
     createCanvas(SCENE_WIDTH, SCENE_HEIGHT, P2D);
 
     clear();
-    background(PALETTE[1]);
+    //background(PALETTE[1],0,0,0);
     frameRate(FPS);
 
     // Sound setup, prepare oscilator, makes little "boop" on start
