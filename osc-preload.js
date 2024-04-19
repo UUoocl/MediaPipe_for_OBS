@@ -1,12 +1,12 @@
 const { contextBridge, ipcRenderer } = require("electron");
 ("use strict");
-var { Server } = require("node-osc");
+var { Client, Server, Message } = require("node-osc");
 const OBSWebSocket = require("obs-websocket-js").default;
 
 contextBridge.exposeInMainWorld("electronAPI", {
   handleGetOBSWSdetails: () => ipcRenderer.invoke("get-obsWSdetails"),
-  createOCSserver: (IP, PORT, PW, oscIP, oscPORT) =>
-    createOCSserver(IP, PORT, PW, oscIP, oscPORT),
+  createOCSserver: (IP, PORT, PW, oscIP, oscInPORT, oscOutPORT) =>
+    createOCSserver(IP, PORT, PW, oscIP, oscInPORT, oscOutPORT),
 });
 
 var scripts = [
@@ -33,16 +33,19 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-//createOCSserver()
+//createOCSserver
 async function createOCSserver(
   websocketIP,
   websocketPort,
   websocketPassword,
   oscIP,
-  oscPORT
+  oscInPORT,
+  oscOutPORT
 ) {
+  /*
+   *connect to OBS web socket server
+   */
   const obs = new OBSWebSocket(websocketIP, websocketPort, websocketPassword);
-  //connect to OBS web socket server
   try {
     const { obsWebSocketVersion, negotiatedRpcVersion } = await obs.connect(
       `ws://${websocketIP}:${websocketPort}`,
@@ -63,10 +66,13 @@ async function createOCSserver(
   });
   console.log(`ws://${websocketIP}:${websocketPort}`);
 
-  //async function createOCSserver() {
-  console.log(typeof oscPORT, typeof oscIP);
-  console.log(oscPORT, oscIP);
-  var oscServer = new Server(oscPORT, oscIP);
+  /*
+   *Create OSC Server In Port
+   */
+  console.log(typeof oscInPORT, typeof oscIP);
+  console.log(oscInPORT, oscIP);
+
+  var oscServer = new Server(oscInPORT, oscIP);
 
   oscServer.on("listening", () => {
     console.log("OSC Server is listening.");
@@ -74,24 +80,80 @@ async function createOCSserver(
 
   oscServer.on("message", (msg) => {
     console.log(`Message: ${msg}`);
-    window.document.body.innerHTML += `${msg} <br>`;
+    window.document.getElementById("messages").innerHTML = `${msg} <br> ${
+      window.document.getElementById("messages").innerHTML
+    }`;
     sendToOBS(msg, obs);
   });
-  
+
+  /*
+   *Create OSC Client Out Port
+   *message from OBS to Zoom
+   */
+  const client = new Client(oscIP, oscOutPORT);
+  console.log(client, oscIP, oscOutPORT, oscInPORT);
+
+  obs.on("CustomEvent", function (event) {
+    console.log(event);
+    if (event.event_name === "OSC-out") {
+      const message = new Message(event.address);
+      if (Object.hasOwn(event, 'arg1')) {
+        message.append(event.arg1);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg2')) {
+        message.append(event.arg2);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg3')) {
+        message.append(event.arg3);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg4')) {
+        message.append(event.arg4);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg5')) {
+        message.append(event.arg5);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg6')) {
+        message.append(event.arg6);
+        console.log(message);
+      }
+      if (Object.hasOwn(event, 'arg7')) {
+        message.append(event.arg7);
+        console.log(message);
+      }
+      console.log(message)
+      client.send(message, (err) => {
+        if (err) {
+          console.error(new Error(err));
+        }
+      });
+      //client.send(`${event.command} "${event.data}"`)
+    }
+  });
+
+  /*
+   *Forward In Port messages to OBS
+   */
+
   function sendToOBS(msg, obs) {
-    console.log("sending message:",JSON.stringify(msg));
+    console.log("sending message:", JSON.stringify(msg));
     const webSocketMessage = JSON.stringify(msg);
     //send results to OBS Browser Source
     obs.call("CallVendorRequest", {
       vendorName: "obs-browser",
       requestType: "emit_event",
       requestData: {
-        event_name: "midi-message",
+        event_name: "osc-message",
         event_data: { webSocketMessage },
       },
     });
 
     //send results to Advanced Scene Switcher
+
     obs.call("CallVendorRequest", {
       vendorName: "AdvancedSceneSwitcher",
       requestType: "AdvancedSceneSwitcherMessage",
