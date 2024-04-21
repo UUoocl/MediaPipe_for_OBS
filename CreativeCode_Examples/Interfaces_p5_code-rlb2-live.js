@@ -23,7 +23,7 @@ var PALETTES = [
     '#ab252640', '#e4712040', '#f8b21c40', '#e5761f40', '#d8513b40', '#fcea7340', '#35131440',
     '#ab252640', '#e4712040', '#f8b21c40', '#e5761f40', '#d8513b40', '#fcea7340', '#35131440',
     '#ab252640', '#e4712040', '#f8b21c40', '#e5761f40', '#d8513b40', '#fcea7340', '#35131440',
-    '#ab252640', '#e4712040', '#f8b21c40'
+    '#ab252640', '#e472040', '#f8b2c40'
   ]],
   //["Reversion", '#cdd2d6', ['#00149140', '#efbb0d40', '#03010240', '#5e8aaf40', '#9c53bf20', '#b1262340', '#098d5e40']],
   //["The Abyss", '#06060c', ['#006d7740', '#83c5be40', '#edf6f940', '#05052040', '#05052040', '#00000040', '#f0f0f040']],
@@ -95,7 +95,7 @@ function getJointPosition(jointnr)
   if (cur_data && cur_data[0]) {
 
     let cur_x = cur_data[jointnr].x
-    let cur_y = cur_data[jointnr + 1].y
+    let cur_y = cur_data[jointnr].y
     no_detection = false
     //  console.log(cur_x, cur_y)
     return [cur_x, cur_y]
