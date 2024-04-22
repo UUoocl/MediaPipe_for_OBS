@@ -2,9 +2,10 @@
 An Electron App to send MediaPipe data to OBS. Landmark positions from the MediaPipe pose model are sent to OBS Browser Source and the Advanced Scene Switcher Plugin.   
 
 How to set up MediaPipe for OBS
-[![Get started using MediaPipe for OBS](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/3bddd524-10ec-446f-a324-53e8423782bd)](https://youtu.be/S-IjFVj6zyE)
+[![Get started using MediaPipe for OBS](https://github.com/UUoocl/MediaPipe_for_OBS/assets/99063397/9883bafc-fc2d-416a-ab4c-a4cb85643e69)](https://youtu.be/S-IjFVj6zyE)
 
-https://youtu.be/XYDIMj3SktU
+https://youtu.be/S-IjFVj6zyE
+
 ```mermaid
 graph LR;
 subgraph OBS
