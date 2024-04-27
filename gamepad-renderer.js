@@ -7,7 +7,7 @@ var setupDetails,
   windowID,
   sourceName,
   MPvalues;
-var frameRate, FPSElement, canvasElement, IP, PORT, PW, gamepadID, gamepadName;
+var frameRate, FPSElement, canvasElement, IP, PORT, PW;
 var now;
 var then = Date.now();
 var interval;
@@ -28,8 +28,6 @@ async function loadRenderer() {
     IP = setupDetails.websocketIP
     PORT = setupDetails.websocketPort
     PW =  setupDetails.websocketPassword
-    gamepadID =  setupDetails.gamepadID
-    gamepadName = setupDetails.gamepadName
  
   await connectOBS(IP,PORT,PW)
 }

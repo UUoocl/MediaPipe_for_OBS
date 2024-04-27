@@ -5,7 +5,6 @@ const poseButton = document.getElementById("PoseButton");
 const wsConnectButton = document.getElementById("WSconnectButton");
 const refreshPrjButton = document.getElementById("refreshProjector");
 const refreshInputButton = document.getElementById("refreshInputs");
-const refreshMidiButton = document.getElementById("refreshMidi");
 const refreshrtcVideoButton = document.getElementById("refreshVideoRTC");
 const refreshrtcAudioButton = document.getElementById("refreshAudioRTC");
 
@@ -19,7 +18,7 @@ async function loadScript() {
   desktopSources = await window.electronAPI.handleGetDesktopSources();
   loadProjectorOptions();
   getInputSources();
-  getMidiSources();
+  //getMidiSources();
   loadrtcVideoOptions();
 }
 
@@ -29,7 +28,7 @@ wsConnectButton.addEventListener("click", startWSconnection);
 //refresh buttons
 refreshPrjButton.addEventListener("click", ipcGetDesktopSources);
 refreshInputButton.addEventListener("click", getInputSources);
-refreshMidiButton.addEventListener("click", getMidiSources);
+//refreshMidiButton.addEventListener("click", getMidiSources);
 refreshrtcVideoButton.addEventListener("click", ipcGetDesktopSources);
 refreshrtcAudioButton.addEventListener("click", getInputSources);
 
@@ -84,95 +83,39 @@ function getInputSources() {
   });
 }
 
-window.addEventListener("gamepadconnected", (e) => {
-  console.log(
-    "Gamepad connected at index %d: %s. %d buttons, %d axes.",
-    e.gamepad.index,
-    e.gamepad.id,
-    e.gamepad.buttons.length,
-    e.gamepad.axes.length,
-    e
-  );
+// window.addEventListener("gamepadconnected", (e) => {
+//   console.log(
+//     "Gamepad connected at index %d: %s. %d buttons, %d axes.",
+//     e.gamepad.index,
+//     e.gamepad.id,
+//     e.gamepad.buttons.length,
+//     e.gamepad.axes.length,
+//     e
+//   );
 
-  //console.log("list of Audio Input Sources")
-  console.log("navigator:", navigator);
-  gamepads = navigator.getGamepads();
+//   //console.log("list of Audio Input Sources")
+//   console.log("navigator:", navigator);
+//   gamepads = navigator.getGamepads();
 
-  //clear list of gamepads
-  if (document.getElementById("gamepad")) {
-    document.getElementById("gamepad").innerHTML = null;
-  }
+//   //clear list of gamepads
+//   if (document.getElementById("gamepad")) {
+//     document.getElementById("gamepad").innerHTML = null;
+//   }
 
-  gamepads.forEach((device) => {
-    if (device) {
-      console.log(device);
-      if (device) {
-        //      console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
-        var x = document.getElementById("gamepad");
-        var option = document.createElement("option");
-        option.text = `${device.index} ${device.id}`;
-        option.id = device.index;
-        x.add(option);
-      }
-    }
-  });
-});
-
-function getMidiSources() {
-  //console.log(document.getElementById("MidiIn"))
-  if (document.getElementById("midiIn")) {
-    document.getElementById("midiIn").innerHTML = null;
-  }
-  if (document.getElementById("midiOut")) {
-    document.getElementById("midiOut").innerHTML = null;
-  }
-  //console.log("list of Audio Input Sources")
-
-  //Access MIDI devices
-  let midi = null; // global MIDIAccess object
-  function onMIDISuccess(midiAccess) {
-    console.log("MIDI ready!");
-    midi = midiAccess; // store in the global (in real usage, would probably keep in an object instance)
-    listInputsAndOutputs(midi);
-  }
-
-  function onMIDIFailure(msg) {
-    console.error(`Failed to get MIDI access - ${msg}`);
-  }
-
-  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
-
-  //List Midi inputs and outputs
-  function listInputsAndOutputs(midiAccess) {
-    for (const entry of midiAccess.inputs) {
-      const input = entry[1];
-      console.log(
-        `Input port [type:'${input.type}']` +
-          ` id:'${input.id}'` +
-          ` manufacturer:'${input.manufacturer}'` +
-          ` name:'${input.name}'` +
-          ` version:'${input.version}'`
-      );
-      var x = document.getElementById("midiIn");
-      var option = document.createElement("option");
-      option.text = input.name;
-      option.id = input.id;
-      x.add(option);
-    }
-
-    for (const entry of midiAccess.outputs) {
-      const output = entry[1];
-      console.log(
-        `Output port [type:'${output.type}'] id:'${output.id}' manufacturer:'${output.manufacturer}' name:'${output.name}' version:'${output.version}'`
-      );
-      var x = document.getElementById("midiOut");
-      var option = document.createElement("option");
-      option.text = output.name;
-      option.id = output.id;
-      x.add(option);
-    }
-  }
-}
+//   gamepads.forEach((device) => {
+//     if (device) {
+//       console.log(device);
+//       if (device) {
+//         //      console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
+//         var x = document.getElementById("gamepad");
+//         var option = document.createElement("option");
+//         option.text = `${device.index} ${device.id}`;
+//         option.id = device.index;
+//         x.add(option);
+//       }
+//     }
+//   });
+// });
 
 async function ipcGetDesktopSources() {
   document.getElementById("projectors").innerHTML = null;
@@ -317,21 +260,12 @@ async function newGamepadWindow() {
 
   //IPC message to open windows to start gamepad
   //const OpenDesktopAudio = document.getElementById('');
-
-  const e = document.getElementById("gamepad");
-  console.log(e.value);
-  console.log(e.options[e.selectedIndex].text);
-  const gamepadName = e.value;
-  const gamepadID = e.options[e.selectedIndex].id;
-  console.log(`${IP}, ${Port}, ${PW}, ${gamepadID}`);
-
   console.log("call main");
-  window.electronAPI.gamepadWindow(IP, Port, PW, gamepadID, gamepadName);
+  window.electronAPI.gamepadWindow(IP, Port, PW);
 }
 //#endregion
 
 //#region Create Midi windows
-var midiInput;
 const midiButton = document.getElementById("midiButton");
 midiButton.addEventListener("click", newMidiWindow);
 
@@ -344,29 +278,14 @@ async function newMidiWindow() {
   //IPC message to open windows to start Media pipe
   //const OpenDesktopAudio = document.getElementById('');
 
-  const In = document.getElementById("midiIn");
-  console.log(In.value);
-  console.log(In.options[In.selectedIndex].text);
-  const inMidiName = In.value;
-  const inMidiID = In.options[In.selectedIndex].id;
-  const Out = document.getElementById("midiOut");
-  console.log(Out.value);
-  console.log(Out.options[Out.selectedIndex].text);
-  const outMidiName = Out.value;
-  const outMidiID = Out.options[In.selectedIndex].id;
-
   console.log(
-    `${IP}, ${Port}, ${PW}, ${inMidiID}, ${inMidiName}, ${outMidiID}, ${outMidiName}`
+    `${IP}, ${Port}, ${PW}`
   );
   console.log("call main");
   window.electronAPI.midiWindow(
     IP,
     Port,
-    PW,
-    inMidiID,
-    inMidiName,
-    outMidiID,
-    outMidiName
+    PW
   );
 }
 //#endregion

@@ -10,41 +10,35 @@ function onEnabled() {
     document.body.innerHTML += "No device detected.";
   } else {
     WebMidi.inputs.forEach((device, index) => {
-    
-      console.log(device.id , midiInID,device.id == midiInID);
-      if (device.id == midiInID) {
-        //midiInIndex = index;
-        addDeviceListener(index);
-      }
-      document.getElementById("midi").innerHTML += `${index}: ${device.name} <br>`;
+      addDeviceListener(index);
+      
+      const midiElem = document.createElement('div');
+      midiElem.id = `midi-${index}`; 
+      midiElem.innerHTML = `<b>${index}: "midi-${device.name}"<b> <br>`;
+      document.getElementById("midi").appendChild(midiElem);
+      const midiDataElem = document.createElement('div');
+      midiDataElem.id = `midi-${index}-data`; 
+      document.getElementById(`midi-${index}`).appendChild(midiDataElem);
     });
   }
-  // const mySynth = WebMidi.inputs[0];
-  // // const mySynth = WebMidi.getInputByName("TYPE NAME HERE!")
-
-  // mySynth.channels[1].addListener("noteon", e => {
-  //   document.body.innerHTML+= `${e.note.name} <br>`;
-  // });
-
+  
   // Listen to 'midi message' events on channels 1, 2 and 3 of the selected input MIDI device
   function addDeviceListener(index) {
-    //const mySynth = WebMidi.getInputById(midiInID);
-    //console.log(mySynth);
     WebMidi.inputs[index].addListener(
-      "midimessage",(e) => sendMidiMessage(e),
-      { channels: [1, 2, 3] }
+      "midimessage",(e) => sendMidiMessage(e)
     );
 
     //send message to OBS Browser and Advanced Scene Switcher
     function sendMidiMessage(e){
-        document.getElementById("midiData").innerHTML = `${JSON.stringify(e.message)} <br> ${document.getElementById("midiData").innerHTML}`;
+      console.log(e)
+        document.getElementById(`midi-${index}-data`).innerHTML = `channel:${JSON.stringify(e.message.channel)}, command:${JSON.stringify(e.message.command)}, type:${JSON.stringify(e.message.type)}, rawData:${JSON.stringify(e.message.rawData)}` ;
         const webSocketMessage = JSON.stringify(e.message)
     //send results to OBS Browser Source
      obs.call("CallVendorRequest", {
         vendorName: "obs-browser",
         requestType: "emit_event",
         requestData: {
-          event_name: "midi-message",
+          event_name: `midi-${e.port._midiInput.name}`,
           event_data: { webSocketMessage},
         },
       });

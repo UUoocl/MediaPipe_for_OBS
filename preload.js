@@ -24,8 +24,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 contextBridge.exposeInMainWorld('electronAPI', {
   poseWindow: (IP, Port, PW, projectorID, sourceName) => ipcRenderer.send('open-pose-window',IP, Port, PW, projectorID, sourceName),
   audioInputWindow: (IP, Port, PW, InputID,sourceName) => ipcRenderer.send('open-audioinput-window',IP, Port, PW, InputID,sourceName),
-  midiWindow: (IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => ipcRenderer.send('open-midi-window',IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName),
-  gamepadWindow: (IP, Port, PW, gamepadID, gamepadName) => ipcRenderer.send('open-gamepad-window',IP, Port, PW, gamepadID, gamepadName),
+  midiWindow: (IP, Port, PW) => ipcRenderer.send('open-midi-window',IP, Port, PW),
+  gamepadWindow: (IP, Port, PW) => ipcRenderer.send('open-gamepad-window',IP, Port, PW),
   oscWindow: (IP, Port, PW, oscIP, oscInPORT,oscOutPORT) => ipcRenderer.send('open-osc-window',IP, Port, PW, oscIP, oscInPORT,oscOutPORT),
   sentimentWindow: (IP, Port, PW) => ipcRenderer.send('open-sentiment-window',IP, Port, PW),
   rtcWindow: (IP, Port, PW, rtcPort, rtcVideoId, rtcAudioId, rtcType) => ipcRenderer.send('open-rtc-window',IP, Port, PW, rtcPort, rtcVideoId, rtcAudioId, rtcType),

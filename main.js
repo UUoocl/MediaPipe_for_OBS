@@ -180,14 +180,14 @@ ipcMain.on(
 //#region Open-gamepad-windows
 ipcMain.on(
   "open-gamepad-window",
-  (event, IP, Port, PW, gamepadID, gamepadName) => {
+  (event, IP, Port, PW) => {
     console.log("main received gamepad IPC");
     gamepadWindow = new BrowserWindow({
       width: 1000,
-      height: 400,
+      height: 600,
       x: 200,
       y: 100,
-      title: gamepadName,
+      title: "GamePad Input",
       frame: true,
       resizable: true,
       //roundedCorners: false,
@@ -205,8 +205,6 @@ ipcMain.on(
       websocketIP: IP,
       websocketPort: Port,
       websocketPassword: PW,
-      gamepadID: gamepadID,
-      gamepadName: gamepadName,
     };
     //console.log(windowSetup)
     gamepadWindow.loadFile("gamepad.html");
@@ -218,14 +216,14 @@ ipcMain.on(
 //#region Open-midi-windows
 ipcMain.on(
   "open-midi-window",
-  (event, IP, Port, PW, inMidiID, inMidiName, outMidiID, outMidiName) => {
+  (event, IP, Port, PW) => {
     console.log("main received IPC");
     midiWindow = new BrowserWindow({
-      width: 400,
-      height: 400,
+      width: 500,
+      height: 600,
       x: 200,
       y: 100,
-      title: inMidiName,
+      title: "Midi Input",
       frame: true,
       resizable: true,
       //roundedCorners: false,
@@ -243,10 +241,6 @@ ipcMain.on(
       websocketIP: IP,
       websocketPort: Port,
       websocketPassword: PW,
-      inputID: inMidiID,
-      inputName: inMidiName,
-      outputID: outMidiID,
-      outputName: outMidiName,
     };
     //console.log(windowSetup)
     midiWindow.loadFile("midi.html");

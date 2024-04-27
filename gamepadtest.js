@@ -11,16 +11,14 @@ var controllers = {};
 var rAF = window.requestAnimationFrame;
 
 function connecthandler(e) {
-  if (e.gamepad.index == gamepadID) {
     addgamepad(e.gamepad);
-  }
 }
 function addgamepad(gamepad) {
   controllers[gamepad.index] = gamepad;
   var d = document.createElement("div");
   d.setAttribute("id", "controller" + gamepad.index);
-  var t = document.createElement("h1");
-  t.appendChild(document.createTextNode("gamepad: " + gamepad.id));
+  var t = document.createElement("h4");
+  t.appendChild(document.createTextNode(`gamepad-${gamepad.index}:  `+ gamepad.id));
   d.appendChild(t);
   var b = document.createElement("div");
   b.className = "buttons";
@@ -68,7 +66,6 @@ function updateStatus() {
     var buttons = d.getElementsByClassName("button");
     var sum = 0;
     for (var i = 0; i < controller.buttons.length; i++) {
-      //console.log(controller)
       var b = buttons[i];
       var val = controller.buttons[i];
       var pressed = val == 1.0;
@@ -78,10 +75,7 @@ function updateStatus() {
         if ("touched" in val) {
           touched = val.touched;
         }
-        // console.log(val)
-        // console.log(val.value)
-        // console.log(typeof val.value)
-        // console.log(sum)
+
         sum += val.value;
         val = val.value;
       }
@@ -109,7 +103,7 @@ function updateStatus() {
       
       const webSocketMessage = JSON.stringify(
         navigator.getGamepads()
-        .filter(p => p).filter(p => p.index == gamepadID)
+        .filter(p => p)
         .map(pad => ({
             index: pad.index,
             id: pad.id,
@@ -125,12 +119,13 @@ function updateStatus() {
         null,
         2
     )
-      //send results to OBS Browser Source
+    console.log(`gamepad-${j}`)
+          //send results to OBS Browser Source
       obs.call("CallVendorRequest", {
         vendorName: "obs-browser",
         requestType: "emit_event",
         requestData: {
-          event_name: "gamepad-message",
+          event_name: `gamepad-${j}`,
           event_data: { webSocketMessage },
         },
       });
